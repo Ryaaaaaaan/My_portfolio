@@ -1,0 +1,189 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "skills": "Compétences",
+    "experience": "Expérience",
+    "education": "Formation",
+    "contact": "Contact",
+    "switchLang": "Changer de langue"
+  },
+  "hero": {
+    "role": "Ingénieur système",
+    "name": "RZE",
+    "experience": "2,5 ans d'expérience",
+    "keywords": "SCRIPTING / SCCM / WINDOWS SERVER",
+    "language": "ANGLAIS",
+    "cta": {
+      "contact": "Me contacter",
+      "downloadCV": "Télécharger CV"
+    },
+    "terminal": {
+      "title": "~/RZE",
+      "prompt": "rze@portfolio %",
+      "commands": {
+        "neofetch": {
+          "command": "neofetch",
+          "description": "Afficher les informations système"
+        },
+        "skills": {
+          "command": "skills --all",
+          "description": "Explorer toutes les compétences"
+        },
+        "experience": {
+          "command": "experience --latest",
+          "description": "Voir l'expérience récente"
+        }
+      },
+      "neofetch_output": {
+        "role": "Ingénieur système",
+        "experience": "2,5 ans",
+        "stack": "SCCM, PowerShell, Windows Server",
+        "languages": "C#, Python, SQL, JavaScript"
+      }
+    }
+  },
+  "skills": {
+    "title": "Compétences",
+    "subtitle": "Technologies et expertises maîtrisées",
+    "tabs": {
+      "technical": "Techniques",
+      "functional": "Fonctionnelles"
+    },
+    "functional": {
+      "title": "Compétences Fonctionnelles",
+      "items": [
+        "Gestion de projet",
+        "Spécifications fonctionnelles",
+        "Reporting",
+        "JIRA",
+        "TRELLO"
+      ]
+    },
+    "technical": {
+      "security": {
+        "title": "Sécurité",
+        "items": ["Firewall", "Zscaler", "Okta"]
+      },
+      "network": {
+        "title": "Réseau",
+        "items": ["TCP/IP", "DHCP", "LAN", "Adressage IP"]
+      },
+      "telecom": {
+        "title": "Télécom",
+        "items": ["4G/LTE", "Wi-Fi", "Cisco"]
+      },
+      "cloud": {
+        "title": "Cloud",
+        "items": ["ServiceNow", "VMware"]
+      },
+      "languages": {
+        "title": "Langages & Frameworks",
+        "items": ["C#", "C++", "CSS", "HTML", "PowerShell", "PHP", "Python", "SQL", "Node.js"]
+      },
+      "system": {
+        "title": "Système",
+        "items": ["Android", "Windows Server", "SCCM", "Bash", "Linux", "macOS", "Windows", "PuTTY", "AirWatch", "JAMF"]
+      },
+      "tools": {
+        "title": "Outils",
+        "items": ["Git", "GitLab", "ServiceNow"]
+      }
+    }
+  },
+  "experience": {
+    "title": "Expérience professionnelle",
+    "subtitle": "Parcours et réalisations",
+    "jobs": [
+      {
+        "company": "Nike",
+        "position": "Ingénieur infrastructure",
+        "period": "Nov 2020 → Oct 2022",
+        "context": "Gestion boutiques Nike IDF (intra-muros Paris), incidents → salles serveurs, support siège/managers, gestion licences, projets d'ouvertures/travaux.",
+        "team": "Équipe 3 pers., ~300 utilisateurs/postes, 5 boutiques/salles serveurs.",
+        "achievements": [
+          "Gestion d'incidents via ServiceNow",
+          "Déploiement d'infrastructures",
+          "Config switch Cisco via PuTTY",
+          "Admin comptes SSO (Okta)",
+          "Masterisation Mac/Windows",
+          "Gestion parc SCCM/JAMF",
+          "Gestion flotte iOS OKTA/AirWatch",
+          "Installation matériels (serveurs, switch, bornes Wi-Fi, imprimantes réseau)",
+          "Formation utilisateur"
+        ],
+        "environment": "4G/LTE, AD, Anglais, Cisco, DHCP/DNS, Firewall, Okta, SCCM, ServiceNow, TCP/IP, Wi-Fi, Windows, Zscaler, iOS, macOS, AirWatch, VMware Workspace ONE"
+      },
+      {
+        "company": "Imerys",
+        "position": "Consultant DSI infra",
+        "period": "Déc 2019 → Fév 2020",
+        "context": "Pilotage patching sécurité Windows via BMC Client, MAJ antivirus serveurs, scripts PowerShell pour automatisation AD, daily meetings + KPI.",
+        "team": "Équipe 3 pers., ~250 serveurs.",
+        "achievements": [
+          "Mises à jour/maintenance serveurs Windows (BMC Client ~250)",
+          "Scripting PowerShell",
+          "MAJ antivirus",
+          "Gestion Active Directory",
+          "Rédaction KPI",
+          "Suivi réunions & reporting",
+          "Automatisation de tâches & scripts"
+        ],
+        "environment": "Active Directory, Bash, PowerShell, GSuite, Reporting, Windows/Windows Server, BMC Client, GPO"
+      }
+    ]
+  },
+  "education": {
+    "title": "Formation & Certifications",
+    "subtitle": "Parcours académique et professionnel",
+    "degrees": [
+      {
+        "school": "EPITECH",
+        "degree": "Master Expert en Technologies de l'Information",
+        "period": "juillet 2021",
+        "description": "Formation complète en technologies de l'information et développement"
+      }
+    ],
+    "certifications": [
+      {
+        "name": "Certifications à venir",
+        "description": "TODO: Ajouter les futures certifications"
+      }
+    ]
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Travaillons ensemble",
+    "commercial": {
+      "title": "Contact commercial",
+      "name": "Andréa MORLIER",
+      "phone": "0664539855",
+      "email": "amorlier@afdtech.com"
+    },
+    "form": {
+      "title": "Envoyer un message",
+      "fields": {
+        "name": "Nom",
+        "email": "Email",
+        "message": "Message"
+      },
+      "submit": "Envoyer",
+      "success": "Message envoyé avec succès !",
+      "error": "Erreur lors de l'envoi du message"
+    }
+  },
+  "legal": {
+    "title": "Mentions légales & clauses",
+    "confidentiality": {
+      "title": "Clause de confidentialité",
+      "content": "Toute information échangée dans le cadre de cette collaboration est strictement confidentielle et ne peut être divulguée à des tiers sans autorisation écrite préalable."
+    },
+    "nonSolicitation":{ 
+      "title": "Clause de non-sollicitation",
+      "content": "Les parties s'engagent à ne pas solliciter directement ou indirectement le personnel de l'autre partie pendant toute la durée de la collaboration et 12 mois après sa fin."
+    },
+    "quality": {
+      "title": "Qualité & sécurité",
+      "content": "Notre organisation respecte les standards ISO 27001 pour la sécurité de l'information. Pour toute question relative à la sécurité, contactez-nous à securite@afdtech.com"
+    }
+  }
+}
