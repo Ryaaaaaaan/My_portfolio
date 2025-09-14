@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RZE - Ingénieur Système | Portfolio",
-  description: "Portfolio de RZE, Ingénieur Système avec expertise en SCCM, Windows Server, PowerShell et infrastructure IT.",
+  title: "Ryan Zemri - Ingénieur Système | Portfolio",
+  description: "Portfolio de Ryan Zemri, Ingénieur Système avec expertise en SCCM, Windows Server, PowerShell et infrastructure IT.",
 };
 
 export default function RootLayout({

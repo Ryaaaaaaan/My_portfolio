@@ -32,7 +32,7 @@ export default function ExperienceSection({ playSound }: ExperienceSectionProps)
             <div className="flex items-center gap-4 mb-6">
               <div className="text-6xl">🛡️</div>
               <div>
-                <h3 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                <h3 className="text-3xl font-bold text-cyan-400">
                   Thales
                 </h3>
                 <p className="text-cyan-400 font-semibold">System Engineer</p>
@@ -43,7 +43,7 @@ export default function ExperienceSection({ playSound }: ExperienceSectionProps)
             <div className="space-y-4">
               <div className="flex flex-wrap gap-2 mb-4">
                 {['💾 WIM Management', '⚡ RAID Config', '🔧 Driver Injection', '🖥️ BIOS Setup', '📊 Benchmarking'].map((skill, i) => (
-                  <span key={i} className="px-3 py-1 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full text-sm border border-purple-500/30">
+                  <span key={i} className="px-3 py-1 bg-cyan-500/20 rounded-full text-sm border border-cyan-500/30">
                     {skill}
                   </span>
                 ))}
@@ -78,7 +78,7 @@ export default function ExperienceSection({ playSound }: ExperienceSectionProps)
             <div className="flex items-center gap-4 mb-6">
               <div className="text-6xl">👟</div>
               <div>
-                <h3 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-green-400 bg-clip-text text-transparent">
+                <h3 className="text-3xl font-bold text-cyan-400">
                   Nike
                 </h3>
                 <p className="text-pink-400 font-semibold">System Engineer</p>
@@ -89,7 +89,7 @@ export default function ExperienceSection({ playSound }: ExperienceSectionProps)
             <div className="space-y-4">
               <div className="flex flex-wrap gap-2 mb-4">
                 {['🎫 ServiceNow', '🔧 Infrastructure', '🌐 Cisco Config', '🔐 SSO Admin', '📱 Mobile Fleet'].map((skill, i) => (
-                  <span key={i} className="px-3 py-1 bg-gradient-to-r from-cyan-500/20 to-green-500/20 rounded-full text-sm border border-cyan-500/30">
+                  <span key={i} className="px-3 py-1 bg-cyan-500/20 rounded-full text-sm border border-cyan-500/30">
                     {skill}
                   </span>
                 ))}
@@ -124,7 +124,7 @@ export default function ExperienceSection({ playSound }: ExperienceSectionProps)
             <div className="flex items-center gap-4 mb-6">
               <div className="text-6xl">⚙️</div>
               <div>
-                <h3 className="text-3xl font-bold bg-gradient-to-r from-green-400 to-purple-400 bg-clip-text text-transparent">
+                <h3 className="text-3xl font-bold text-cyan-400">
                   Imerys
                 </h3>
                 <p className="text-cyan-400 font-semibold">Infrastructure Consultant</p>
@@ -135,7 +135,7 @@ export default function ExperienceSection({ playSound }: ExperienceSectionProps)
             <div className="space-y-4">
               <div className="flex flex-wrap gap-2 mb-4">
                 {['🖥️ 250 Servers', '🔒 PowerShell', '🛡️ Security Patches', '📊 KPIs', '🤖 Automation'].map((skill, i) => (
-                  <span key={i} className="px-3 py-1 bg-gradient-to-r from-green-500/20 to-purple-500/20 rounded-full text-sm border border-green-500/30">
+                  <span key={i} className="px-3 py-1 bg-cyan-500/20 rounded-full text-sm border border-cyan-500/30">
                     {skill}
                   </span>
                 ))}
@@ -169,7 +169,7 @@ export default function ExperienceSection({ playSound }: ExperienceSectionProps)
             <div className="flex items-center gap-4 mb-6">
               <div className="text-6xl">🎓</div>
               <div>
-                <h3 className="text-3xl font-bold bg-gradient-to-r from-pink-400 to-cyan-400 bg-clip-text text-transparent">
+                <h3 className="text-3xl font-bold text-cyan-400">
                   EPITECH
                 </h3>
                 <p className="text-green-400 font-semibold">Master IT Expert</p>
@@ -180,7 +180,7 @@ export default function ExperienceSection({ playSound }: ExperienceSectionProps)
             <div className="space-y-4">
               <div className="flex flex-wrap gap-2 mb-4">
                 {['💻 Software Engineering', '🔬 Innovation', '🚀 Entrepreneurship', '🌍 International', '🤝 Team Projects'].map((skill, i) => (
-                  <span key={i} className="px-3 py-1 bg-gradient-to-r from-pink-500/20 to-cyan-500/20 rounded-full text-sm border border-pink-500/30">
+                  <span key={i} className="px-3 py-1 bg-cyan-500/20 rounded-full text-sm border border-pink-500/30">
                     {skill}
                   </span>
                 ))}

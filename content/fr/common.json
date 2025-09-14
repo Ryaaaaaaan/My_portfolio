@@ -9,7 +9,7 @@
   },
   "hero": {
     "role": "Ingénieur système",
-    "name": "RZE",
+    "name": "Ryan Zemri",
     "experience": "2,5 ans d'expérience",
     "keywords": "SCRIPTING / SCCM / WINDOWS SERVER",
     "language": "ANGLAIS",
@@ -18,7 +18,7 @@
       "downloadCV": "Télécharger CV"
     },
     "terminal": {
-      "title": "~/RZE",
+      "title": "~/Ryan",
       "prompt": "rze@portfolio %",
       "commands": {
         "neofetch": {

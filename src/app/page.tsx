@@ -7,6 +7,7 @@ import { Code, Database, Laptop, Mail, Github, Linkedin, ExternalLink, Terminal,
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState('hero')
+  const [isScrolling, setIsScrolling] = useState(false)
   const heroRef = useRef(null)
   const aboutRef = useRef(null)
   const skillsRef = useRef(null)
@@ -131,38 +132,72 @@ export default function Portfolio() {
     } catch {}
   }, [])
 
-  // Apple Music-style liquid selector
-  const updateLiquidSelector = useCallback((target: HTMLElement) => {
-    if (!selectorRef.current || !navRef.current) return
+  // Navigation slider with smooth animations
+  const updateLiquidSelector = useCallback((target: HTMLElement, anticipate: boolean = false) => {
+    if (!selectorRef.current || !navRef.current || !target) return
+    
+    // Validate target element
+    if (!target.closest('.nav-items')) return
     
     const navItemsContainer = navRef.current.querySelector('.nav-items')
+    if (!navItemsContainer) return
+    
     const targetRect = target.getBoundingClientRect()
-    const navItemsRect = navItemsContainer?.getBoundingClientRect()
+    const navItemsRect = navItemsContainer.getBoundingClientRect()
     
-    if (!navItemsRect) return
+    // Check element dimensions
+    if (!targetRect.width || !targetRect.height || !navItemsRect.width) return
     
-    const left = targetRect.left - navItemsRect.left
-    const width = targetRect.width
+    // Calculate position
+    const left = Math.max(0, targetRect.left - navItemsRect.left - 4)
+    const width = Math.min(targetRect.width + 8, navItemsRect.width - left)
     
-    selectorRef.current.style.transform = `translateX(${left}px)`
-    selectorRef.current.style.width = `${width}px`
+    // Keep within bounds
+    if (left < 0 || left + width > navItemsRect.width) return
+    
+    // Smooth animation frame updates
+    requestAnimationFrame(() => {
+      if (!selectorRef.current) return
+      
+      if (anticipate) {
+        // Quick anticipation effect
+        const currentLeft = parseFloat(selectorRef.current.style.transform?.match(/translateX\(([^)]+)\)/)?.[1] || '0')
+        const overshoot = left > currentLeft ? Math.min(8, navItemsRect.width - left - width) : Math.max(-8, -left)
+        
+        selectorRef.current.style.transition = 'transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.15s ease-out'
+        selectorRef.current.style.transform = `translateX(${left + overshoot}px) translateZ(0)`
+        
+        // Quick settle animation
+        setTimeout(() => {
+          if (selectorRef.current) {
+            selectorRef.current.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.2s ease-out'
+            selectorRef.current.style.transform = `translateX(${left}px) translateZ(0)`
+            selectorRef.current.style.width = `${width}px`
+          }
+        }, 100)
+      } else {
+        selectorRef.current.style.transform = `translateX(${left}px) translateZ(0)`
+        selectorRef.current.style.width = `${width}px`
+      }
+    })
   }, [])
 
   const handleNavClick = useCallback((sectionId: string, e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     setActiveSection(sectionId)
     
-    // Add liquid morph effect
+    // Add morph animation effect
     if (selectorRef.current) {
-      selectorRef.current.style.animationDuration = '0.6s'
+      selectorRef.current.style.animationDuration = '0.4s'
       setTimeout(() => {
         if (selectorRef.current) {
           selectorRef.current.style.animationDuration = '4s'
         }
-      }, 600)
+      }, 400)
     }
     
-    updateLiquidSelector(e.currentTarget)
+    // Smooth click animation
+    updateLiquidSelector(e.currentTarget, true)
     playSound('click')
     
     // Smooth scroll to section
@@ -172,18 +207,110 @@ export default function Portfolio() {
     }
   }, [updateLiquidSelector, playSound])
 
-  // Initialize liquid selector position
+  // Auto section detection on scroll
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (navRef.current) {
-        const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
-        if (activeNavItem) {
-          updateLiquidSelector(activeNavItem)
-        }
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    }
+
+    let debounceTimer: NodeJS.Timeout
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      // Smooth section detection
+      clearTimeout(debounceTimer)
+      debounceTimer = setTimeout(() => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const sectionId = entry.target.id
+            if (sectionId && sectionId !== activeSection) {
+              // Smooth state update
+              requestAnimationFrame(() => {
+                setActiveSection(sectionId)
+              })
+            }
+          }
+        })
+      }, 16)
+    }
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions)
+
+    // Observe all sections
+    const sections = ['hero', 'about', 'skills', 'projects', 'contact']
+    sections.forEach(sectionId => {
+      const element = document.getElementById(sectionId)
+      if (element) {
+        observer.observe(element)
       }
-    }, 100)
+    })
+
+    return () => {
+      observer.disconnect()
+      clearTimeout(debounceTimer)
+    }
+  }, [activeSection])
+
+  // Track scroll state
+  useEffect(() => {
+    let scrollTimer: NodeJS.Timeout
+    
+    const handleScroll = () => {
+      setIsScrolling(true)
+      clearTimeout(scrollTimer)
+      scrollTimer = setTimeout(() => {
+        setIsScrolling(false)
+      }, 100)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      clearTimeout(scrollTimer)
+    }
+  }, [])
+
+  // Update selector position
+  useEffect(() => {
+    const updateSelector = () => {
+      if (!navRef.current) return
+      
+      const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
+      if (activeNavItem) {
+        // Smooth selector movement
+        updateLiquidSelector(activeNavItem, false)
+      }
+    }
+
+    // Quick update timing
+    const timer = setTimeout(updateSelector, 50)
     
     return () => clearTimeout(timer)
+  }, [activeSection, updateLiquidSelector])
+
+  // Handle window resize
+  useEffect(() => {
+    let resizeTimer: NodeJS.Timeout
+    
+    const handleResize = () => {
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(() => {
+        if (navRef.current) {
+          const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
+          if (activeNavItem) {
+            updateLiquidSelector(activeNavItem)
+          }
+        }
+      }, 100)
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      clearTimeout(resizeTimer)
+    }
   }, [updateLiquidSelector])
 
   // Mouse tracking for interactive effects
@@ -281,7 +408,18 @@ export default function Portfolio() {
                 href="#hero" 
                 className={`nav-item ${activeSection === 'hero' ? 'active' : ''}`}
                 onClick={(e) => handleNavClick('hero', e)}
-                onMouseEnter={() => playSound('hover')}
+                onMouseEnter={(e) => {
+                  playSound('hover')
+                  updateLiquidSelector(e.currentTarget, false)
+                }}
+                onMouseLeave={() => {
+                  if (navRef.current) {
+                    const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
+                    if (activeNavItem) {
+                      updateLiquidSelector(activeNavItem, false)
+                    }
+                  }
+                }}
               >
                 <span>Accueil</span>
               </a>
@@ -289,7 +427,18 @@ export default function Portfolio() {
                 href="#about" 
                 className={`nav-item ${activeSection === 'about' ? 'active' : ''}`}
                 onClick={(e) => handleNavClick('about', e)}
-                onMouseEnter={() => playSound('hover')}
+                onMouseEnter={(e) => {
+                  playSound('hover')
+                  updateLiquidSelector(e.currentTarget, false)
+                }}
+                onMouseLeave={() => {
+                  if (navRef.current) {
+                    const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
+                    if (activeNavItem) {
+                      updateLiquidSelector(activeNavItem, false)
+                    }
+                  }
+                }}
               >
                 <span>À propos</span>
               </a>
@@ -297,7 +446,18 @@ export default function Portfolio() {
                 href="#skills" 
                 className={`nav-item ${activeSection === 'skills' ? 'active' : ''}`}
                 onClick={(e) => handleNavClick('skills', e)}
-                onMouseEnter={() => playSound('hover')}
+                onMouseEnter={(e) => {
+                  playSound('hover')
+                  updateLiquidSelector(e.currentTarget, false)
+                }}
+                onMouseLeave={() => {
+                  if (navRef.current) {
+                    const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
+                    if (activeNavItem) {
+                      updateLiquidSelector(activeNavItem, false)
+                    }
+                  }
+                }}
               >
                 <span>Skills</span>
               </a>
@@ -305,7 +465,18 @@ export default function Portfolio() {
                 href="#projects" 
                 className={`nav-item ${activeSection === 'projects' ? 'active' : ''}`}
                 onClick={(e) => handleNavClick('projects', e)}
-                onMouseEnter={() => playSound('hover')}
+                onMouseEnter={(e) => {
+                  playSound('hover')
+                  updateLiquidSelector(e.currentTarget, false)
+                }}
+                onMouseLeave={() => {
+                  if (navRef.current) {
+                    const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
+                    if (activeNavItem) {
+                      updateLiquidSelector(activeNavItem, false)
+                    }
+                  }
+                }}
               >
                 <span>Projets</span>
               </a>
@@ -313,7 +484,18 @@ export default function Portfolio() {
                 href="#contact" 
                 className={`nav-item ${activeSection === 'contact' ? 'active' : ''}`}
                 onClick={(e) => handleNavClick('contact', e)}
-                onMouseEnter={() => playSound('hover')}
+                onMouseEnter={(e) => {
+                  playSound('hover')
+                  updateLiquidSelector(e.currentTarget, false)
+                }}
+                onMouseLeave={() => {
+                  if (navRef.current) {
+                    const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
+                    if (activeNavItem) {
+                      updateLiquidSelector(activeNavItem, false)
+                    }
+                  }
+                }}
               >
                 <span>Contact</span>
               </a>
@@ -355,7 +537,7 @@ export default function Portfolio() {
               <div className="terminal-glow"></div>
               <p className="terminal-text text-sm relative z-10">
                 <span className="text-green-400">{'>'}</span> whoami<br />
-                <span className="text-white font-semibold">RZE - System Engineer & Creative Developer</span><br />
+                <span className="text-white font-semibold">Ryan Zemri - System Engineer & Creative Developer</span><br />
                 <span className="text-green-400">{'>'}</span> status: <span className="text-cyan-400 animate-pulse">online ●</span><br />
                 <span className="text-purple-400 text-xs">{'>'}</span> <span className="text-gray-400 text-xs">click to connect...</span>
               </p>
@@ -370,7 +552,7 @@ export default function Portfolio() {
             className="hero-title mb-6"
             onMouseEnter={() => playSound('hover')}
           >
-            RZE
+            Ryan Zemri
           </motion.h1>
 
           <motion.p
@@ -428,12 +610,12 @@ export default function Portfolio() {
               className="glass-card p-8"
             >
               <div className="w-48 h-48 mx-auto mb-8 relative">
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-400 via-pink-400 to-cyan-400 p-1">
+                <div className="absolute inset-0 rounded-full bg-cyan-400 p-1">
                   <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center text-6xl font-bold text-white">
                     R
                   </div>
                 </div>
-                <div className="absolute -inset-4 rounded-full bg-gradient-to-br from-purple-400 to-cyan-400 opacity-30 animate-pulse"></div>
+                <div className="absolute -inset-4 rounded-full bg-cyan-400 opacity-30 animate-pulse"></div>
               </div>
             </motion.div>
 
@@ -492,7 +674,18 @@ export default function Portfolio() {
                 transition={{ delay: index * 0.2, duration: 0.8 }}
                 whileHover={{ scale: 1.03 }}
                 className={`glass-card p-8 text-center group cursor-pointer neon-glow-${skill.color.split('-')[1]}`}
-                onMouseEnter={() => playSound('hover')}
+                onMouseEnter={(e) => {
+                  playSound('hover')
+                  updateLiquidSelector(e.currentTarget, false)
+                }}
+                onMouseLeave={() => {
+                  if (navRef.current) {
+                    const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
+                    if (activeNavItem) {
+                      updateLiquidSelector(activeNavItem, false)
+                    }
+                  }
+                }}
               >
                 <div className="flex items-center gap-4 mb-6">
                   <div className="skill-icon-container relative">
@@ -581,7 +774,18 @@ export default function Portfolio() {
                   z: 50 
                 }}
                 className={`glass-card p-8 group cursor-pointer neon-glow-${project.color.split('-')[1]}`}
-                onMouseEnter={() => playSound('hover')}
+                onMouseEnter={(e) => {
+                  playSound('hover')
+                  updateLiquidSelector(e.currentTarget, false)
+                }}
+                onMouseLeave={() => {
+                  if (navRef.current) {
+                    const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
+                    if (activeNavItem) {
+                      updateLiquidSelector(activeNavItem, false)
+                    }
+                  }
+                }}
                 onClick={() => playSound('click')}
               >
                 <div className="flex items-center gap-4 mb-6">
@@ -604,7 +808,7 @@ export default function Portfolio() {
                   ))}
                 </div>
 
-                <div className="w-full h-1 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full"></div>
+                <div className="w-full h-1 bg-cyan-500/20 rounded-full"></div>
               </motion.div>
             ))}
           </div>
@@ -730,8 +934,19 @@ export default function Portfolio() {
                     type="submit"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 backdrop-blur border border-cyan-400/30"
-                    onMouseEnter={() => playSound('hover')}
+                    className="w-full bg-cyan-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 backdrop-blur border border-cyan-400/30"
+                    onMouseEnter={(e) => {
+                  playSound('hover')
+                  updateLiquidSelector(e.currentTarget, false)
+                }}
+                onMouseLeave={() => {
+                  if (navRef.current) {
+                    const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
+                    if (activeNavItem) {
+                      updateLiquidSelector(activeNavItem, false)
+                    }
+                  }
+                }}
                   >
                     <span className="flex items-center justify-center gap-2">
                       <Mail className="w-5 h-5" />
