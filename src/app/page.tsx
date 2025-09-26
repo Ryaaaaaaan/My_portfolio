@@ -398,7 +398,7 @@ export default function Portfolio() {
       <div className="matrix-rain"></div>
       
       {/* Liquid Glass Header Pill */}
-      <header className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50">
+      <header className="fixed top-4 sm:top-6 left-1/2 transform -translate-x-1/2 z-50 w-auto">
         <nav className="liquid-header-pill">
           <div className="liquid-nav-content" ref={navRef}>
             <div className="nav-items">
@@ -421,8 +421,8 @@ export default function Portfolio() {
               >
                 <span>Accueil</span>
               </a>
-              <a 
-                href="#about" 
+              <a
+                href="#about"
                 className={`nav-item ${activeSection === 'about' ? 'active' : ''}`}
                 onClick={(e) => handleNavClick('about', e)}
                 onMouseEnter={(e) => {
@@ -438,7 +438,8 @@ export default function Portfolio() {
                   }
                 }}
               >
-                <span>À propos</span>
+                <span className="hidden sm:inline">À propos</span>
+                <span className="sm:hidden">Info</span>
               </a>
               <a 
                 href="#skills" 
@@ -459,8 +460,8 @@ export default function Portfolio() {
               >
                 <span>Skills</span>
               </a>
-              <a 
-                href="#projects" 
+              <a
+                href="#projects"
                 className={`nav-item ${activeSection === 'projects' ? 'active' : ''}`}
                 onClick={(e) => handleNavClick('projects', e)}
                 onMouseEnter={(e) => {
@@ -478,8 +479,8 @@ export default function Portfolio() {
               >
                 <span>Projets</span>
               </a>
-              <a 
-                href="#contact" 
+              <a
+                href="#contact"
                 className={`nav-item ${activeSection === 'contact' ? 'active' : ''}`}
                 onClick={(e) => handleNavClick('contact', e)}
                 onMouseEnter={(e) => {
@@ -505,7 +506,7 @@ export default function Portfolio() {
       </header>
 
       {/* Hero Section */}
-      <section id="hero" ref={heroRef} className="min-h-screen flex items-center justify-center relative z-10 px-4">
+      <section id="hero" ref={heroRef} className="min-h-screen flex items-center justify-center relative z-10 px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={isHeroInView ? { opacity: 1, y: 0 } : {}}
@@ -566,7 +567,7 @@ export default function Portfolio() {
             initial={{ opacity: 0, y: 30 }}
             animate={isHeroInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.9, duration: 0.8 }}
-            className="flex flex-col sm:flex-row gap-6 justify-center"
+            className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center w-full"
           >
             <motion.button
               whileHover={{ scale: 1.05, y: -5 }}
@@ -575,7 +576,7 @@ export default function Portfolio() {
                 playSound('whoosh')
                 document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
               }}
-              className="glass-card neon-glow-purple px-8 py-4 rounded-2xl font-semibold text-white transition-all duration-300"
+              className="glass-card neon-glow-purple px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold text-white transition-all duration-300 text-sm sm:text-base w-full sm:w-auto max-w-xs"
             >
               Découvrir mes projets
             </motion.button>
@@ -586,7 +587,7 @@ export default function Portfolio() {
                 playSound('whoosh')
                 document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
               }}
-              className="glass-card neon-glow-cyan px-8 py-4 rounded-2xl font-semibold text-white transition-all duration-300"
+              className="glass-card neon-glow-cyan px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold text-white transition-all duration-300 text-sm sm:text-base w-full sm:w-auto max-w-xs"
             >
               Me contacter
             </motion.button>
@@ -595,27 +596,27 @@ export default function Portfolio() {
       </section>
 
       {/* About Section */}
-      <section id="about" ref={aboutRef} className="py-32 px-4 relative z-10">
+      <section id="about" ref={aboutRef} className="py-16 sm:py-24 lg:py-32 px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, x: -50 }}
             animate={isAboutInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8 }}
-            className="text-5xl font-bold text-center mb-16 hero-tagline"
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-8 sm:mb-12 lg:mb-16 hero-tagline"
           >
             À propos
           </motion.h2>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, x: -100 }}
               animate={isAboutInView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.3, duration: 0.8 }}
               className="glass-card p-8"
             >
-              <div className="w-48 h-48 mx-auto mb-8 relative">
+              <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 mx-auto mb-6 sm:mb-8 relative">
                 <div className="absolute inset-0 rounded-full bg-cyan-400 p-1">
-                  <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center text-6xl font-bold text-white">
+                  <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center text-3xl sm:text-4xl lg:text-6xl font-bold text-white">
                     R
                   </div>
                 </div>
@@ -629,26 +630,26 @@ export default function Portfolio() {
               transition={{ delay: 0.5, duration: 0.8 }}
               className="space-y-6"
             >
-              <h3 className="text-3xl font-bold text-white mb-6">Ingénieur Système Créatif</h3>
-              <p className="text-gray-300 text-lg leading-relaxed">
-                Passionné par l&apos;intersection entre technologie et créativité, je transforme 
+              <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4 sm:mb-6">Ingénieur Système Créatif</h3>
+              <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
+                Passionné par l&apos;intersection entre technologie et créativité, je transforme
                 des concepts complexes en expériences digitales élégantes et performantes.
               </p>
-              <p className="text-gray-300 text-lg leading-relaxed">
-                Spécialisé dans les infrastructures modernes, l&apos;automatisation intelligente 
+              <p className="text-gray-300 text-base sm:text-lg leading-relaxed">
+                Spécialisé dans les infrastructures modernes, l&apos;automatisation intelligente
                 et les interfaces utilisateur innovantes qui repoussent les limites du possible.
               </p>
               
-              <div className="grid grid-cols-2 gap-4 mt-8">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-6 sm:mt-8">
                 {[
                   { label: "Projets", value: "50+" },
                   { label: "Expérience", value: "3 ans" },
                   { label: "Technologies", value: "25+" },
                   { label: "Café/jour", value: "∞" }
                 ].map((stat) => (
-                  <div key={stat.label} className="glass-card p-4 text-center">
-                    <div className="text-2xl font-bold text-white">{stat.value}</div>
-                    <div className="text-gray-400 text-sm">{stat.label}</div>
+                  <div key={stat.label} className="glass-card p-3 sm:p-4 text-center">
+                    <div className="text-xl sm:text-2xl font-bold text-white">{stat.value}</div>
+                    <div className="text-gray-400 text-xs sm:text-sm">{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -658,18 +659,18 @@ export default function Portfolio() {
       </section>
 
       {/* Skills Section */}
-      <section id="skills" ref={skillsRef} className="py-32 px-4 relative z-10">
+      <section id="skills" ref={skillsRef} className="py-16 sm:py-24 lg:py-32 px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
             animate={isSkillsInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
-            className="text-5xl font-bold text-center mb-16 hero-tagline"
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-8 sm:mb-12 lg:mb-16 hero-tagline"
           >
             Compétences
           </motion.h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {skills.map((skill, index) => (
               <motion.div
                 key={skill.name}
@@ -677,7 +678,7 @@ export default function Portfolio() {
                 animate={isSkillsInView ? { opacity: 1, y: 0, scale: 1 } : {}}
                 transition={{ delay: index * 0.2, duration: 0.8 }}
                 whileHover={{ scale: 1.03 }}
-                className={`glass-card p-8 text-center group cursor-pointer neon-glow-${skill.color.split('-')[1]}`}
+                className={`glass-card p-4 sm:p-6 lg:p-8 text-center group cursor-pointer neon-glow-${skill.color.split('-')[1]}`}
                 onMouseEnter={(e) => {
                   playSound('hover')
                   updateLiquidSelector(e.currentTarget, false)
@@ -691,15 +692,15 @@ export default function Portfolio() {
                   }
                 }}
               >
-                <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                   <div className="skill-icon-container relative">
-                    <div className="text-3xl text-white group-hover:scale-110 transition-transform duration-300 relative z-10">
+                    <div className="text-2xl sm:text-3xl text-white group-hover:scale-110 transition-transform duration-300 relative z-10">
                       {skill.icon}
                     </div>
                     <div className="skill-icon-glow absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
                   <div className="flex-1 text-left">
-                    <h3 className="text-lg font-bold text-white mb-1">{skill.name}</h3>
+                    <h3 className="text-base sm:text-lg font-bold text-white mb-1">{skill.name}</h3>
                     <p className="text-xs text-gray-400">{skill.experience} experience</p>
                   </div>
                 </div>
@@ -753,18 +754,18 @@ export default function Portfolio() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" ref={projectsRef} className="py-32 px-4 relative z-10">
+      <section id="projects" ref={projectsRef} className="py-16 sm:py-24 lg:py-32 px-4 relative z-10">
         <div className="max-w-7xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
             animate={isProjectsInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
-            className="text-5xl font-bold text-center mb-16 hero-tagline"
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-8 sm:mb-12 lg:mb-16 hero-tagline"
           >
             Projets
           </motion.h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
             {projects.map((project, index) => (
               <motion.div
                 key={project.id}
@@ -777,7 +778,7 @@ export default function Portfolio() {
                   rotateX: 5,
                   z: 50 
                 }}
-                className={`glass-card p-8 group cursor-pointer neon-glow-${project.color.split('-')[1]}`}
+                className={`glass-card p-4 sm:p-6 lg:p-8 group cursor-pointer neon-glow-${project.color.split('-')[1]}`}
                 onMouseEnter={(e) => {
                   playSound('hover')
                   updateLiquidSelector(e.currentTarget, false)
@@ -795,12 +796,12 @@ export default function Portfolio() {
                   window.open(project.githubUrl, '_blank')
                 }}
               >
-                <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
                   <div className="text-white group-hover:scale-110 transition-transform duration-300">
                     {project.icon}
                   </div>
-                  <h3 className="text-2xl font-bold text-white">{project.title}</h3>
-                  <div className="ml-auto flex gap-3 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
+                  <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white flex-1">{project.title}</h3>
+                  <div className="flex gap-2 sm:gap-3 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
                     {project.demoUrl && (
                       <motion.button
                         onClick={(e) => {
@@ -810,14 +811,13 @@ export default function Portfolio() {
                         }}
                         whileHover={{ scale: 1.05, y: -2 }}
                         whileTap={{ scale: 0.95 }}
-                        className="glass-card px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-400/30 hover:border-cyan-400/50 rounded-xl transition-all duration-300 backdrop-blur-sm group/btn"
+                        className="glass-card px-2 sm:px-4 py-1 sm:py-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-400/30 hover:border-cyan-400/50 rounded-lg sm:rounded-xl transition-all duration-300 backdrop-blur-sm group/btn"
                         title="Voir le site web"
                       >
-                        <div className="flex items-center gap-2">
-                          <ExternalLink className="w-4 h-4 text-cyan-400 group-hover/btn:scale-110 transition-transform" />
-                          <span className="text-sm font-semibold text-white">Site Web</span>
+                        <div className="flex items-center gap-1 sm:gap-2">
+                          <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 text-cyan-400 group-hover/btn:scale-110 transition-transform" />
+                          <span className="text-xs sm:text-sm font-semibold text-white hidden sm:inline">Site Web</span>
                         </div>
-                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/0 via-cyan-400/10 to-cyan-400/0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 rounded-xl"></div>
                       </motion.button>
                     )}
                     <motion.button
@@ -828,25 +828,24 @@ export default function Portfolio() {
                       }}
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
-                      className="glass-card px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 border border-purple-400/30 hover:border-purple-400/50 rounded-xl transition-all duration-300 backdrop-blur-sm group/btn"
+                      className="glass-card px-2 sm:px-4 py-1 sm:py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 border border-purple-400/30 hover:border-purple-400/50 rounded-lg sm:rounded-xl transition-all duration-300 backdrop-blur-sm group/btn"
                       title="Voir le code source"
                     >
-                      <div className="flex items-center gap-2">
-                        <Github className="w-4 h-4 text-purple-400 group-hover/btn:scale-110 transition-transform" />
-                        <span className="text-sm font-semibold text-white">GitHub</span>
+                      <div className="flex items-center gap-1 sm:gap-2">
+                        <Github className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400 group-hover/btn:scale-110 transition-transform" />
+                        <span className="text-xs sm:text-sm font-semibold text-white hidden sm:inline">GitHub</span>
                       </div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-400/0 via-purple-400/10 to-purple-400/0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 rounded-xl"></div>
                     </motion.button>
                   </div>
                 </div>
                 
-                <p className="text-gray-300 mb-6 group-hover:text-white transition-colors duration-300">
+                <p className="text-gray-300 text-sm sm:text-base mb-4 sm:mb-6 group-hover:text-white transition-colors duration-300">
                   {project.description}
                 </p>
                 
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-1 sm:gap-2 mb-4 sm:mb-6">
                   {project.tech.map((tech) => (
-                    <span key={tech} className="px-3 py-1 bg-white/10 rounded-full text-sm text-gray-300 group-hover:bg-white/20 transition-colors duration-300">
+                    <span key={tech} className="px-2 sm:px-3 py-1 bg-white/10 rounded-full text-xs sm:text-sm text-gray-300 group-hover:bg-white/20 transition-colors duration-300">
                       {tech}
                     </span>
                   ))}
@@ -861,57 +860,57 @@ export default function Portfolio() {
 
 
       {/* Contact Section */}
-      <section id="contact" ref={contactRef} className="py-32 px-4 relative z-10">
+      <section id="contact" ref={contactRef} className="py-16 sm:py-24 lg:py-32 px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
             animate={isContactInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
-            className="text-5xl font-bold text-center mb-16 hero-tagline"
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-8 sm:mb-12 lg:mb-16 hero-tagline"
           >
             Contact
           </motion.h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Contact Info */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={isContactInView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.2, duration: 0.8 }}
-              className="space-y-8"
+              className="space-y-6 sm:space-y-8"
             >
-              <div className="glass-card p-8">
-                <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                  <Mail className="w-6 h-6 text-cyan-400" />
+              <div className="glass-card p-4 sm:p-6 lg:p-8">
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-3">
+                  <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-400" />
                   Restons connectés
                 </h3>
                 
-                <div className="space-y-6">
-                  <div className="flex items-center gap-4 p-4 bg-gray-800/30 rounded-lg border border-gray-700/30 backdrop-blur">
-                    <Mail className="w-5 h-5 text-cyan-400" />
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-800/30 rounded-lg border border-gray-700/30 backdrop-blur">
+                    <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400" />
                     <div>
-                      <p className="text-white font-semibold">Email</p>
-                      <a href="mailto:Raykosama.pro@icloud.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+                      <p className="text-white font-semibold text-sm sm:text-base">Email</p>
+                      <a href="mailto:Raykosama.pro@icloud.com" className="text-cyan-400 hover:text-cyan-300 transition-colors text-sm sm:text-base">
                         Raykosama.pro@icloud.com
                       </a>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-4 p-4 bg-gray-800/30 rounded-lg border border-gray-700/30 backdrop-blur">
-                    <Github className="w-5 h-5 text-purple-400" />
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-800/30 rounded-lg border border-gray-700/30 backdrop-blur">
+                    <Github className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
                     <div>
-                      <p className="text-white font-semibold">GitHub</p>
-                      <a href="https://github.com/Ryaaaaaaan" className="text-purple-400 hover:text-purple-300 transition-colors">
+                      <p className="text-white font-semibold text-sm sm:text-base">GitHub</p>
+                      <a href="https://github.com/Ryaaaaaaan" className="text-purple-400 hover:text-purple-300 transition-colors text-sm sm:text-base">
                         github.com/Ryaaaaaaan
                       </a>
                     </div>
                   </div>
-                  
-                  <div className="flex items-center gap-4 p-4 bg-gray-800/30 rounded-lg border border-gray-700/30 backdrop-blur">
-                    <Linkedin className="w-5 h-5 text-blue-400" />
+
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-800/30 rounded-lg border border-gray-700/30 backdrop-blur">
+                    <Linkedin className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
                     <div>
-                      <p className="text-white font-semibold">LinkedIn</p>
-                      <a href="https://linkedin.com/in/ryan-zemri" className="text-blue-400 hover:text-blue-300 transition-colors">
+                      <p className="text-white font-semibold text-sm sm:text-base">LinkedIn</p>
+                      <a href="https://linkedin.com/in/ryan-zemri" className="text-blue-400 hover:text-blue-300 transition-colors text-sm sm:text-base">
                         ryan zemri
                       </a>
                     </div>
@@ -920,8 +919,8 @@ export default function Portfolio() {
               </div>
 
               {/* Terminal Status */}
-              <div className="glass-card p-6">
-                <div className="terminal-text text-sm">
+              <div className="glass-card p-4 sm:p-6">
+                <div className="terminal-text text-xs sm:text-sm">
                   <span className="text-green-400">{'>'}</span> ping rze-portfolio.dev<br />
                   <span className="text-white">PING rze-portfolio.dev: 64 bytes from server</span><br />
                   <span className="text-cyan-400">time=42ms TTL=255</span><br />
@@ -936,40 +935,40 @@ export default function Portfolio() {
               animate={isContactInView ? { opacity: 1, x: 0 } : {}}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              <div className="glass-card p-8">
-                <h3 className="text-2xl font-bold text-white mb-6">Envoyez-moi un message</h3>
+              <div className="glass-card p-4 sm:p-6 lg:p-8">
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Envoyez-moi un message</h3>
                 
-                <form className="space-y-6" onSubmit={(e) => {
+                <form className="space-y-4 sm:space-y-6" onSubmit={(e) => {
                   e.preventDefault()
                   playSound('click')
                   alert('Merci pour votre message ! Je vous répondrai bientôt.')
                 }}>
                   <div>
-                    <label className="block text-white font-semibold mb-2">Nom</label>
+                    <label className="block text-white font-semibold mb-2 text-sm sm:text-base">Nom</label>
                     <input
                       type="text"
                       required
-                      className="w-full p-4 bg-gray-800/60 border border-gray-700/60 rounded-lg text-white placeholder-gray-300 backdrop-blur focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/30 transition-all"
+                      className="w-full p-3 sm:p-4 bg-gray-800/60 border border-gray-700/60 rounded-lg text-white placeholder-gray-300 backdrop-blur focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/30 transition-all text-sm sm:text-base"
                       placeholder="Votre nom..."
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-white font-semibold mb-2">Email</label>
+                    <label className="block text-white font-semibold mb-2 text-sm sm:text-base">Email</label>
                     <input
                       type="email"
                       required
-                      className="w-full p-4 bg-gray-800/60 border border-gray-700/60 rounded-lg text-white placeholder-gray-300 backdrop-blur focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/30 transition-all"
+                      className="w-full p-3 sm:p-4 bg-gray-800/60 border border-gray-700/60 rounded-lg text-white placeholder-gray-300 backdrop-blur focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/30 transition-all text-sm sm:text-base"
                       placeholder="votre.email@exemple.com"
                     />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-white font-semibold mb-2">Message</label>
+                    <label className="block text-white font-semibold mb-2 text-sm sm:text-base">Message</label>
                     <textarea
                       required
-                      rows={6}
-                      className="w-full p-4 bg-gray-800/60 border border-gray-700/60 rounded-lg text-white placeholder-gray-300 backdrop-blur focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/30 transition-all resize-none"
+                      rows={5}
+                      className="w-full p-3 sm:p-4 bg-gray-800/60 border border-gray-700/60 rounded-lg text-white placeholder-gray-300 backdrop-blur focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/30 transition-all resize-none text-sm sm:text-base"
                       placeholder="Votre message..."
                     />
                   </div>
@@ -978,22 +977,22 @@ export default function Portfolio() {
                     type="submit"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="w-full bg-cyan-500 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 backdrop-blur border border-cyan-400/30"
+                    className="w-full bg-cyan-500 text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 backdrop-blur border border-cyan-400/30 text-sm sm:text-base"
                     onMouseEnter={(e) => {
-                  playSound('hover')
-                  updateLiquidSelector(e.currentTarget, false)
-                }}
-                onMouseLeave={() => {
-                  if (navRef.current) {
-                    const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
-                    if (activeNavItem) {
-                      updateLiquidSelector(activeNavItem, false)
-                    }
-                  }
-                }}
+                      playSound('hover')
+                      updateLiquidSelector(e.currentTarget, false)
+                    }}
+                    onMouseLeave={() => {
+                      if (navRef.current) {
+                        const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
+                        if (activeNavItem) {
+                          updateLiquidSelector(activeNavItem, false)
+                        }
+                      }
+                    }}
                   >
                     <span className="flex items-center justify-center gap-2">
-                      <Mail className="w-5 h-5" />
+                      <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
                       Envoyer le message
                     </span>
                   </motion.button>
@@ -1005,12 +1004,12 @@ export default function Portfolio() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 relative z-10">
+      <footer className="py-8 sm:py-12 px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="glass-card p-8">
-            <p className="terminal-text text-center">
+          <div className="glass-card p-4 sm:p-6 lg:p-8">
+            <p className="terminal-text text-center text-sm sm:text-base">
               {'>'} Portfolio créé avec passion<br />
-              <span className="text-gray-400">© 2025 • Built with Next.js, Framer Motion & lots of ☕</span>
+              <span className="text-gray-400 text-xs sm:text-sm">© 2025 • Built with Next.js, Framer Motion & lots of ☕</span>
             </p>
           </div>
         </div>
