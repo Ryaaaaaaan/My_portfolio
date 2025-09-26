@@ -3,7 +3,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
 import * as Tone from 'tone'
-import { Code, Database, Laptop, Mail, Github, Linkedin, ExternalLink, Terminal, Cpu, Zap } from 'lucide-react'
+import { Code, Database, Laptop, Mail, Github, Linkedin, ExternalLink, Terminal, Cpu } from 'lucide-react'
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState('hero')
@@ -327,35 +327,33 @@ export default function Portfolio() {
   const projects = [
     {
       id: 1,
-      title: "Neural Dashboard",
-      description: "Interface de monitoring AI avec visualisations temps réel et analytics avancées pour optimiser les performances des modèles d'intelligence artificielle.",
-      tech: ["React", "D3.js", "Python", "TensorFlow", "Redis"],
+      title: "Braineath",
+      description: "Application iOS native développée en Swift pour la méditation et le bien-être mental. Interface intuitive avec widgets personnalisés et expérience utilisateur optimisée.",
+      tech: ["Swift", "Xcode", "iOS", "UIKit", "Core Data"],
       color: "neon-purple",
-      icon: <Cpu className="w-8 h-8" />
+      icon: <Cpu className="w-8 h-8" />,
+      githubUrl: "https://github.com/Ryaaaaaaan/Braineath",
+      demoUrl: "https://braineath.vercel.app"
     },
     {
       id: 2,
-      title: "CyberSync Platform",
-      description: "Plateforme de synchronisation de données sécurisée avec chiffrement end-to-end et architecture zero-trust pour entreprises.",
-      tech: ["Node.js", "PostgreSQL", "Docker", "Kubernetes"],
+      title: "Promptly",
+      description: "Téléprompter moderne avec reconnaissance vocale en temps réel. Performance optimisée à 60fps avec surlignage séquentiel des mots et raccourcis clavier avancés.",
+      tech: ["TypeScript", "Vite", "Speech Recognition", "CSS", "Vercel"],
       color: "neon-cyan",
-      icon: <Database className="w-8 h-8" />
+      icon: <Terminal className="w-8 h-8" />,
+      githubUrl: "https://github.com/Ryaaaaaaan/Promptly",
+      demoUrl: "https://promptly-five-pi.vercel.app"
     },
     {
       id: 3,
-      title: "QuantumCode IDE",
-      description: "Environnement de développement next-generation avec IA intégrée et collaboration temps réel pour équipes distribuées.",
-      tech: ["Electron", "TypeScript", "Monaco Editor", "WebRTC"],
+      title: "Braineath Website",
+      description: "Site web vitrine pour l'application Braineath. Design moderne et responsive avec galerie de captures d'écran et intégration de services de communication.",
+      tech: ["HTML5", "CSS3", "JavaScript", "Vercel", "Responsive Design"],
       color: "neon-green",
-      icon: <Code className="w-8 h-8" />
-    },
-    {
-      id: 4,
-      title: "HoloOS Interface",
-      description: "Interface système futuriste avec reconnaissance gestuelle 3D et commandes vocales pour environnements immersifs.",
-      tech: ["Three.js", "WebGL", "Speech API", "AR/VR"],
-      color: "neon-pink",
-      icon: <Zap className="w-8 h-8" />
+      icon: <Code className="w-8 h-8" />,
+      githubUrl: "https://github.com/Ryaaaaaaan/Braineath_Website",
+      demoUrl: "https://braineath.vercel.app/"
     }
   ]
 
@@ -573,7 +571,10 @@ export default function Portfolio() {
             <motion.button
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => playSound('whoosh')}
+              onClick={() => {
+                playSound('whoosh')
+                document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
+              }}
               className="glass-card neon-glow-purple px-8 py-4 rounded-2xl font-semibold text-white transition-all duration-300"
             >
               Découvrir mes projets
@@ -581,7 +582,10 @@ export default function Portfolio() {
             <motion.button
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => playSound('whoosh')}
+              onClick={() => {
+                playSound('whoosh')
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+              }}
               className="glass-card neon-glow-cyan px-8 py-4 rounded-2xl font-semibold text-white transition-all duration-300"
             >
               Me contacter
@@ -786,14 +790,54 @@ export default function Portfolio() {
                     }
                   }
                 }}
-                onClick={() => playSound('click')}
+                onClick={() => {
+                  playSound('click')
+                  window.open(project.githubUrl, '_blank')
+                }}
               >
                 <div className="flex items-center gap-4 mb-6">
                   <div className="text-white group-hover:scale-110 transition-transform duration-300">
                     {project.icon}
                   </div>
                   <h3 className="text-2xl font-bold text-white">{project.title}</h3>
-                  <ExternalLink className="w-5 h-5 text-gray-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="ml-auto flex gap-3 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
+                    {project.demoUrl && (
+                      <motion.button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          playSound('click')
+                          window.open(project.demoUrl, '_blank')
+                        }}
+                        whileHover={{ scale: 1.05, y: -2 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="glass-card px-4 py-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-400/30 hover:border-cyan-400/50 rounded-xl transition-all duration-300 backdrop-blur-sm group/btn"
+                        title="Voir le site web"
+                      >
+                        <div className="flex items-center gap-2">
+                          <ExternalLink className="w-4 h-4 text-cyan-400 group-hover/btn:scale-110 transition-transform" />
+                          <span className="text-sm font-semibold text-white">Site Web</span>
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/0 via-cyan-400/10 to-cyan-400/0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                      </motion.button>
+                    )}
+                    <motion.button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        playSound('click')
+                        window.open(project.githubUrl, '_blank')
+                      }}
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="glass-card px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 border border-purple-400/30 hover:border-purple-400/50 rounded-xl transition-all duration-300 backdrop-blur-sm group/btn"
+                      title="Voir le code source"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Github className="w-4 h-4 text-purple-400 group-hover/btn:scale-110 transition-transform" />
+                        <span className="text-sm font-semibold text-white">GitHub</span>
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-purple-400/0 via-purple-400/10 to-purple-400/0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300 rounded-xl"></div>
+                    </motion.button>
+                  </div>
                 </div>
                 
                 <p className="text-gray-300 mb-6 group-hover:text-white transition-colors duration-300">
@@ -847,8 +891,8 @@ export default function Portfolio() {
                     <Mail className="w-5 h-5 text-cyan-400" />
                     <div>
                       <p className="text-white font-semibold">Email</p>
-                      <a href="mailto:contact@rze-portfolio.dev" className="text-cyan-400 hover:text-cyan-300 transition-colors">
-                        contact@rze-portfolio.dev
+                      <a href="mailto:Raykosama.pro@icloud.com" className="text-cyan-400 hover:text-cyan-300 transition-colors">
+                        Raykosama.pro@icloud.com
                       </a>
                     </div>
                   </div>
@@ -857,8 +901,8 @@ export default function Portfolio() {
                     <Github className="w-5 h-5 text-purple-400" />
                     <div>
                       <p className="text-white font-semibold">GitHub</p>
-                      <a href="https://github.com/rze-dev" className="text-purple-400 hover:text-purple-300 transition-colors">
-                        github.com/rze-dev
+                      <a href="https://github.com/Ryaaaaaaan" className="text-purple-400 hover:text-purple-300 transition-colors">
+                        github.com/Ryaaaaaaan
                       </a>
                     </div>
                   </div>
@@ -867,8 +911,8 @@ export default function Portfolio() {
                     <Linkedin className="w-5 h-5 text-blue-400" />
                     <div>
                       <p className="text-white font-semibold">LinkedIn</p>
-                      <a href="https://linkedin.com/in/rze-dev" className="text-blue-400 hover:text-blue-300 transition-colors">
-                        linkedin.com/in/rze-dev
+                      <a href="https://linkedin.com/in/ryan-zemri" className="text-blue-400 hover:text-blue-300 transition-colors">
+                        ryan zemri
                       </a>
                     </div>
                   </div>
