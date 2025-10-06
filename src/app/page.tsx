@@ -5,7 +5,7 @@ import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import { Code, Database, Laptop, Mail, Github, Linkedin, ExternalLink, Terminal, Cpu, Camera, Music } from 'lucide-react'
 import Image from 'next/image'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation, Pagination, EffectCoverflow, Autoplay } from 'swiper/modules'
+import { Navigation, Pagination } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
@@ -25,12 +25,12 @@ export default function Portfolio() {
   const navRef = useRef<HTMLDivElement>(null)
   const selectorRef = useRef<HTMLDivElement>(null)
 
-  const isHeroInView = useInView(heroRef, { once: true, margin: "0px 0px -200px 0px" })
-  const isAboutInView = useInView(aboutRef, { once: true, margin: "0px 0px -200px 0px" })
-  const isSkillsInView = useInView(skillsRef, { once: true, margin: "0px 0px -200px 0px" })
-  const isProjectsInView = useInView(projectsRef, { once: true, margin: "0px 0px -200px 0px" })
-  const isHobbiesInView = useInView(hobbiesRef, { once: true, margin: "0px 0px -200px 0px" })
-  const isContactInView = useInView(contactRef, { once: true, margin: "0px 0px -200px 0px" })
+  const isHeroInView = useInView(heroRef, { once: true })
+  const isAboutInView = useInView(aboutRef, { once: true })
+  const isSkillsInView = useInView(skillsRef, { once: true })
+  const isProjectsInView = useInView(projectsRef, { once: true })
+  const isHobbiesInView = useInView(hobbiesRef, { once: true })
+  const isContactInView = useInView(contactRef, { once: true })
 
   // Detect mobile device
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function Portfolio() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Scroll-based zoom effects for sections (optimized)
+  // Scroll-based zoom effects (desktop only, super light)
   const { scrollYProgress: aboutProgress } = useScroll({
     target: aboutRef,
     offset: ["start end", "end start"]
@@ -58,24 +58,10 @@ export default function Portfolio() {
     offset: ["start end", "end start"]
   })
 
-  const { scrollYProgress: contactProgress } = useScroll({
-    target: contactRef,
-    offset: ["start end", "end start"]
-  })
-
-  // Pre-create all transforms (hooks must be called unconditionally)
-  // Mobile gets lighter effects, desktop gets full effects
-  const aboutScale = useTransform(aboutProgress, [0.2, 0.5], isMobile ? [1.2, 1] : [1.5, 1])
-  const aboutOpacity = useTransform(aboutProgress, [0.2, 0.5], [0, 1])
-
-  const skillsScale = useTransform(skillsProgress, [0.2, 0.5], isMobile ? [1.3, 1] : [2, 1])
-  const skillsOpacity = useTransform(skillsProgress, [0.2, 0.5], [0, 1])
-
-  const projectsScale = useTransform(projectsProgress, [0.2, 0.5], isMobile ? [1.3, 1] : [1.8, 1])
-  const projectsOpacity = useTransform(projectsProgress, [0.2, 0.5], [0, 1])
-
-  const contactScale = useTransform(contactProgress, [0.2, 0.5], isMobile ? [1.2, 1] : [1.6, 1])
-  const contactOpacity = useTransform(contactProgress, [0.2, 0.5], [0, 1])
+  // Zoom effects - Star Wars style zoom out (desktop only)
+  const aboutScale = useTransform(aboutProgress, [0.15, 0.45], isMobile ? [1, 1] : [1.5, 1])
+  const skillsScale = useTransform(skillsProgress, [0.15, 0.45], isMobile ? [1, 1] : [1.8, 1])
+  const projectsScale = useTransform(projectsProgress, [0.15, 0.45], isMobile ? [1, 1] : [1.6, 1])
 
   // Enhanced mouse tracking for liquid glass effects (throttled for performance)
   const handleMouseMove = useCallback((e: MouseEvent) => {
@@ -724,15 +710,12 @@ export default function Portfolio() {
 
           <motion.div
             className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center"
-            style={isMobile ? {} : {
-              scale: aboutScale,
-              opacity: aboutOpacity
-            }}
+            style={{ scale: aboutScale }}
           >
             <motion.div
-              initial={{ opacity: 0, scale: isMobile ? 0.8 : 1, x: isMobile ? 0 : -100 }}
-              animate={isAboutInView ? { opacity: 1, scale: 1, x: 0 } : {}}
-              transition={{ delay: isMobile ? 0.1 : 0.3, duration: isMobile ? 0.4 : 0.8 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isAboutInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.1, duration: 0.6 }}
               className="glass-card p-8"
             >
               <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 mx-auto mb-6 sm:mb-8 relative">
@@ -746,9 +729,9 @@ export default function Portfolio() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, scale: isMobile ? 0.8 : 1, x: isMobile ? 0 : 100 }}
-              animate={isAboutInView ? { opacity: 1, scale: 1, x: 0 } : {}}
-              transition={{ delay: isMobile ? 0.3 : 0.5, duration: isMobile ? 0.4 : 0.8 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isAboutInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.3, duration: 0.6 }}
               className="space-y-6"
             >
               <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4 sm:mb-6">Ingénieur Système Créatif</h3>
@@ -793,22 +776,19 @@ export default function Portfolio() {
 
           <motion.div
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8"
-            style={isMobile ? {} : {
-              scale: skillsScale,
-              opacity: skillsOpacity
-            }}
+            style={{ scale: skillsScale }}
           >
             {skills.map((skill, index) => (
               <motion.div
                 key={skill.name}
-                initial={{ opacity: 0, scale: 0.7, y: isMobile ? 30 : 100 }}
-                animate={isSkillsInView ? { opacity: 1, scale: 1, y: 0 } : {}}
+                initial={{ opacity: 0, y: 20 }}
+                animate={isSkillsInView ? { opacity: 1, y: 0 } : {}}
                 transition={{
-                  delay: isMobile ? index * 0.15 : index * 0.2,
-                  duration: isMobile ? 0.5 : 0.8,
+                  delay: index * 0.1,
+                  duration: 0.5,
                   ease: "easeOut"
                 }}
-                whileHover={{ scale: isMobile ? 1.02 : 1.03 }}
+                whileHover={{ scale: 1.02 }}
                 className={`glass-card p-4 sm:p-6 lg:p-8 text-center group cursor-pointer neon-glow-${skill.color.split('-')[1]}`}
                 onMouseEnter={(e) => {
                   playSound()
@@ -888,25 +868,19 @@ export default function Portfolio() {
 
           <motion.div
             className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8"
-            style={isMobile ? {} : {
-              scale: projectsScale,
-              opacity: projectsOpacity
-            }}
+            style={{ scale: projectsScale }}
           >
             {projects.map((project, index) => (
               <motion.div
                 key={project.id}
-                initial={{ opacity: 0, scale: 0.7, y: isMobile ? 40 : 0 }}
-                animate={isProjectsInView ? { opacity: 1, scale: 1, y: 0 } : {}}
+                initial={{ opacity: 0, y: 20 }}
+                animate={isProjectsInView ? { opacity: 1, y: 0 } : {}}
                 transition={{
-                  delay: isMobile ? index * 0.2 : index * 0.15,
-                  duration: isMobile ? 0.5 : 0.8,
+                  delay: index * 0.1,
+                  duration: 0.5,
                   ease: "easeOut"
                 }}
-                whileHover={{
-                  scale: isMobile ? 1.02 : 1.05,
-                  z: 50
-                }}
+                whileHover={{ scale: 1.02 }}
                 className={`glass-card p-4 sm:p-6 lg:p-8 group cursor-pointer neon-glow-${project.color.split('-')[1]}`}
                 onMouseEnter={(e) => {
                   playSound()
@@ -1011,27 +985,17 @@ export default function Portfolio() {
                 {/* Swiper Carousel */}
                 <div className="swiper-container-custom">
                   <Swiper
-                    modules={isMobile ? [Pagination] : [Navigation, Pagination, EffectCoverflow, Autoplay]}
-                    effect={isMobile ? "slide" : "coverflow"}
+                    modules={[Pagination, Navigation]}
+                    effect="slide"
                     grabCursor={true}
                     centeredSlides={true}
-                    slidesPerView="auto"
-                    coverflowEffect={isMobile ? undefined : {
-                      rotate: 40,
-                      stretch: 0,
-                      depth: 80,
-                      modifier: 1,
-                      slideShadows: false,
-                    }}
+                    slidesPerView={1}
+                    spaceBetween={20}
                     pagination={{
                       clickable: true,
                       dynamicBullets: true
                     }}
                     navigation={!isMobile}
-                    autoplay={isMobile ? false : {
-                      delay: 3000,
-                      disableOnInteraction: false,
-                    }}
                     loop={true}
                     className="photo-swiper"
                   >
@@ -1064,7 +1028,7 @@ export default function Portfolio() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={isHobbiesInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.4, duration: 0.5, ease: "easeOut" }}
-                className="text-gray-300 text-sm sm:text-base text-center mt-4 hobby-text-glow-purple"
+                className="text-gray-300 text-base sm:text-lg lg:text-xl text-center mt-4 hobby-text-glow-purple"
               >
                 Amateur de photographie, je capture les moments qui m&apos;inspirent.
               </motion.p>
@@ -1123,7 +1087,7 @@ export default function Portfolio() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={isHobbiesInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.5, duration: 0.5, ease: "easeOut" }}
-                className="text-gray-300 text-sm sm:text-base text-center mt-4 hobby-text-glow-cyan"
+                className="text-gray-300 text-base sm:text-lg lg:text-xl text-center mt-4 hobby-text-glow-cyan"
               >
                 Les albums qui m&apos;accompagnent au quotidien.
               </motion.p>
@@ -1144,18 +1108,12 @@ export default function Portfolio() {
             Contact
           </motion.h2>
 
-          <motion.div
-            className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12"
-            style={isMobile ? {} : {
-              scale: contactScale,
-              opacity: contactOpacity
-            }}
-          >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Contact Info */}
             <motion.div
-              initial={{ opacity: 0, scale: isMobile ? 0.8 : 1, x: isMobile ? 0 : -50 }}
-              animate={isContactInView ? { opacity: 1, scale: 1, x: 0 } : {}}
-              transition={{ delay: isMobile ? 0.1 : 0.2, duration: isMobile ? 0.5 : 0.8 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isContactInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.1, duration: 0.6 }}
               className="space-y-6 sm:space-y-8"
             >
               <div className="glass-card p-4 sm:p-6 lg:p-8">
@@ -1210,9 +1168,9 @@ export default function Portfolio() {
 
             {/* Contact Form */}
             <motion.div
-              initial={{ opacity: 0, scale: isMobile ? 0.8 : 1, x: isMobile ? 0 : 50 }}
-              animate={isContactInView ? { opacity: 1, scale: 1, x: 0 } : {}}
-              transition={{ delay: isMobile ? 0.3 : 0.4, duration: isMobile ? 0.5 : 0.8 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={isContactInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.3, duration: 0.6 }}
             >
               <div className="glass-card p-4 sm:p-6 lg:p-8">
                 <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Envoyez-moi un message</h3>
@@ -1278,7 +1236,7 @@ export default function Portfolio() {
                 </form>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
