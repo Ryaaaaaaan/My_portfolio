@@ -1,55 +1,116 @@
 'use client'
 
 import { useEffect, useRef, useCallback, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
-import * as Tone from 'tone'
-import { Code, Database, Laptop, Mail, Github, Linkedin, ExternalLink, Terminal, Cpu } from 'lucide-react'
+import { motion, useInView, useScroll, useTransform } from 'framer-motion'
+import { Code, Database, Laptop, Mail, Github, Linkedin, ExternalLink, Terminal, Cpu, Camera, Music } from 'lucide-react'
+import Image from 'next/image'
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Navigation, Pagination, EffectCoverflow, Autoplay } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+import 'swiper/css/effect-coverflow'
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState('hero')
-  const [isScrolling, setIsScrolling] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [showHeader, setShowHeader] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
   const heroRef = useRef(null)
   const aboutRef = useRef(null)
   const skillsRef = useRef(null)
   const projectsRef = useRef(null)
+  const hobbiesRef = useRef(null)
   const contactRef = useRef(null)
   const navRef = useRef<HTMLDivElement>(null)
   const selectorRef = useRef<HTMLDivElement>(null)
 
-  const isHeroInView = useInView(heroRef, { once: true })
-  const isAboutInView = useInView(aboutRef, { once: true })
-  const isSkillsInView = useInView(skillsRef, { once: true })
-  const isProjectsInView = useInView(projectsRef, { once: true })
-  const isContactInView = useInView(contactRef, { once: true })
+  const isHeroInView = useInView(heroRef, { once: true, margin: "0px 0px -200px 0px" })
+  const isAboutInView = useInView(aboutRef, { once: true, margin: "0px 0px -200px 0px" })
+  const isSkillsInView = useInView(skillsRef, { once: true, margin: "0px 0px -200px 0px" })
+  const isProjectsInView = useInView(projectsRef, { once: true, margin: "0px 0px -200px 0px" })
+  const isHobbiesInView = useInView(hobbiesRef, { once: true, margin: "0px 0px -200px 0px" })
+  const isContactInView = useInView(contactRef, { once: true, margin: "0px 0px -200px 0px" })
 
-  // Enhanced mouse tracking for liquid glass effects
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    const cards = document.querySelectorAll('.glass-card')
-    const time = Date.now() * 0.001
-    
-    cards.forEach((card) => {
-      const rect = card.getBoundingClientRect()
-      const centerX = rect.left + rect.width / 2
-      const centerY = rect.top + rect.height / 2
-      const x = ((e.clientX - rect.left) / rect.width) * 100
-      const y = ((e.clientY - rect.top) / rect.height) * 100
-      
-      // Calculate rotation based on mouse position
-      const rotation = Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180 / Math.PI
-      
-      if (e.clientX >= rect.left - 50 && e.clientX <= rect.right + 50 && 
-          e.clientY >= rect.top - 50 && e.clientY <= rect.bottom + 50) {
-        ;(card as HTMLElement).style.setProperty('--mouse-x', `${x}%`)
-        ;(card as HTMLElement).style.setProperty('--mouse-y', `${y}%`)
-        ;(card as HTMLElement).style.setProperty('--mouse-rotation', `${rotation + time * 20}deg`)
-      }
-    })
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
+  // Scroll-based zoom effects for sections (optimized)
+  const { scrollYProgress: aboutProgress } = useScroll({
+    target: aboutRef,
+    offset: ["start end", "end start"]
+  })
+
+  const { scrollYProgress: skillsProgress } = useScroll({
+    target: skillsRef,
+    offset: ["start end", "end start"]
+  })
+
+  const { scrollYProgress: projectsProgress } = useScroll({
+    target: projectsRef,
+    offset: ["start end", "end start"]
+  })
+
+  const { scrollYProgress: contactProgress } = useScroll({
+    target: contactRef,
+    offset: ["start end", "end start"]
+  })
+
+  // Pre-create all transforms (hooks must be called unconditionally)
+  // Mobile gets lighter effects, desktop gets full effects
+  const aboutScale = useTransform(aboutProgress, [0.2, 0.5], isMobile ? [1.2, 1] : [1.5, 1])
+  const aboutOpacity = useTransform(aboutProgress, [0.2, 0.5], [0, 1])
+
+  const skillsScale = useTransform(skillsProgress, [0.2, 0.5], isMobile ? [1.3, 1] : [2, 1])
+  const skillsOpacity = useTransform(skillsProgress, [0.2, 0.5], [0, 1])
+
+  const projectsScale = useTransform(projectsProgress, [0.2, 0.5], isMobile ? [1.3, 1] : [1.8, 1])
+  const projectsOpacity = useTransform(projectsProgress, [0.2, 0.5], [0, 1])
+
+  const contactScale = useTransform(contactProgress, [0.2, 0.5], isMobile ? [1.2, 1] : [1.6, 1])
+  const contactOpacity = useTransform(contactProgress, [0.2, 0.5], [0, 1])
+
+  // Enhanced mouse tracking for liquid glass effects (throttled for performance)
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (isMobile) return // Skip on mobile for better performance
+
+    requestAnimationFrame(() => {
+      const cards = document.querySelectorAll('.glass-card')
+      const time = Date.now() * 0.001
+
+      cards.forEach((card) => {
+        const rect = card.getBoundingClientRect()
+        const centerX = rect.left + rect.width / 2
+        const centerY = rect.top + rect.height / 2
+        const x = ((e.clientX - rect.left) / rect.width) * 100
+        const y = ((e.clientY - rect.top) / rect.height) * 100
+
+        // Calculate rotation based on mouse position
+        const rotation = Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180 / Math.PI
+
+        if (e.clientX >= rect.left - 50 && e.clientX <= rect.right + 50 &&
+            e.clientY >= rect.top - 50 && e.clientY <= rect.bottom + 50) {
+          ;(card as HTMLElement).style.setProperty('--mouse-x', `${x}%`)
+          ;(card as HTMLElement).style.setProperty('--mouse-y', `${y}%`)
+          ;(card as HTMLElement).style.setProperty('--mouse-rotation', `${rotation + time * 20}deg`)
+        }
+      })
+    })
+  }, [isMobile])
+
   useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [handleMouseMove])
+    if (!isMobile) {
+      window.addEventListener('mousemove', handleMouseMove, { passive: true })
+      return () => window.removeEventListener('mousemove', handleMouseMove)
+    }
+  }, [handleMouseMove, isMobile])
 
   // Matrix Effect
   useEffect(() => {
@@ -115,21 +176,9 @@ export default function Portfolio() {
     return cleanup
   }, [])
 
-  // Sound System
-  const playSound = useCallback(async (type: 'hover' | 'click' | 'whoosh') => {
-    try {
-      await Tone.start()
-      const synth = new Tone.Synth().toDestination()
-      synth.volume.value = -25
-      
-      if (type === 'hover') {
-        synth.triggerAttackRelease('G4', '0.1')
-      } else if (type === 'click') {
-        synth.triggerAttackRelease('C5', '0.2')
-      } else if (type === 'whoosh') {
-        synth.triggerAttackRelease('C3', '0.3')
-      }
-    } catch {}
+  // Sound System (disabled)
+  const playSound = useCallback(async () => {
+    // Sounds disabled
   }, [])
 
   // Navigation slider with smooth animations
@@ -198,7 +247,7 @@ export default function Portfolio() {
     
     // Smooth click animation
     updateLiquidSelector(e.currentTarget, true)
-    playSound('click')
+    playSound()
     
     // Smooth scroll to section
     const element = document.getElementById(sectionId)
@@ -207,7 +256,7 @@ export default function Portfolio() {
     }
   }, [updateLiquidSelector, playSound])
 
-  // Auto section detection on scroll
+  // Auto section detection on scroll (optimized)
   useEffect(() => {
     const observerOptions = {
       root: null,
@@ -215,30 +264,21 @@ export default function Portfolio() {
       threshold: 0
     }
 
-    let debounceTimer: NodeJS.Timeout
-
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      // Smooth section detection
-      clearTimeout(debounceTimer)
-      debounceTimer = setTimeout(() => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const sectionId = entry.target.id
-            if (sectionId && sectionId !== activeSection) {
-              // Smooth state update
-              requestAnimationFrame(() => {
-                setActiveSection(sectionId)
-              })
-            }
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id
+          if (sectionId && sectionId !== activeSection) {
+            setActiveSection(sectionId)
           }
-        })
-      }, 16)
+        }
+      })
     }
 
     const observer = new IntersectionObserver(observerCallback, observerOptions)
 
     // Observe all sections
-    const sections = ['hero', 'about', 'skills', 'projects', 'contact']
+    const sections = ['hero', 'about', 'skills', 'projects', 'hobbies', 'contact']
     sections.forEach(sectionId => {
       const element = document.getElementById(sectionId)
       if (element) {
@@ -246,48 +286,46 @@ export default function Portfolio() {
       }
     })
 
-    return () => {
-      observer.disconnect()
-      clearTimeout(debounceTimer)
-    }
+    return () => observer.disconnect()
   }, [activeSection])
 
-  // Track scroll state
+  // Track scroll state and header visibility (throttled)
   useEffect(() => {
-    let scrollTimer: NodeJS.Timeout
-    
+    let ticking = false
+
     const handleScroll = () => {
-      setIsScrolling(true)
-      clearTimeout(scrollTimer)
-      scrollTimer = setTimeout(() => {
-        setIsScrolling(false)
-      }, 100)
-    }
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      clearTimeout(scrollTimer)
-    }
-  }, [])
+          // Hide header when scrolling down, show when scrolling up
+          if (currentScrollY > lastScrollY && currentScrollY > 100) {
+            setShowHeader(false)
+          } else {
+            setShowHeader(true)
+          }
 
-  // Update selector position
-  useEffect(() => {
-    const updateSelector = () => {
-      if (!navRef.current) return
-      
-      const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
-      if (activeNavItem) {
-        // Smooth selector movement
-        updateLiquidSelector(activeNavItem, false)
+          setLastScrollY(currentScrollY)
+          ticking = false
+        })
+        ticking = true
       }
     }
 
-    // Quick update timing
-    const timer = setTimeout(updateSelector, 50)
-    
-    return () => clearTimeout(timer)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScrollY])
+
+  // Update selector position (optimized)
+  useEffect(() => {
+    if (!navRef.current) return
+
+    const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
+    if (activeNavItem) {
+      requestAnimationFrame(() => {
+        updateLiquidSelector(activeNavItem, false)
+      })
+    }
   }, [activeSection, updateLiquidSelector])
 
   // Handle window resize
@@ -313,16 +351,25 @@ export default function Portfolio() {
     }
   }, [updateLiquidSelector])
 
-  // Mouse tracking for interactive effects
+  // Mouse tracking for interactive effects (throttled, desktop only)
   useEffect(() => {
+    if (isMobile) return
+
+    let ticking = false
     const handleMouseMove = (e: MouseEvent) => {
-      document.documentElement.style.setProperty('--mouse-x', `${(e.clientX / window.innerWidth) * 100}%`)
-      document.documentElement.style.setProperty('--mouse-y', `${(e.clientY / window.innerHeight) * 100}%`)
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          document.documentElement.style.setProperty('--mouse-x', `${(e.clientX / window.innerWidth) * 100}%`)
+          document.documentElement.style.setProperty('--mouse-y', `${(e.clientY / window.innerHeight) * 100}%`)
+          ticking = false
+        })
+        ticking = true
+      }
     }
-    
-    window.addEventListener('mousemove', handleMouseMove)
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true })
     return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
+  }, [isMobile])
 
   const projects = [
     {
@@ -357,36 +404,77 @@ export default function Portfolio() {
     }
   ]
 
+  const photos = [
+    '/photos/IMG_3159.jpeg',
+    '/photos/IMG_5612.jpeg',
+    '/photos/IMG_6274.jpeg',
+    '/photos/IMG_7272.jpeg',
+    '/photos/IMG_8186.JPG'
+  ]
+
+  const albums = [
+    {
+      title: "After Hours",
+      artist: "The Weeknd",
+      cover: "https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36"
+    },
+    {
+      title: "The Bends",
+      artist: "Radiohead",
+      cover: "/photos/Radiohead the bends.png"
+    },
+    {
+      title: "Origin of Symmetry",
+      artist: "Muse",
+      cover: "/photos/origin of symmetry.jpeg"
+    },
+    {
+      title: "Un Verano Sin Ti",
+      artist: "Bad Bunny",
+      cover: "/photos/Un verano sin ti cover art.jpg"
+    },
+    {
+      title: "My Beautiful Dark Twisted Fantasy",
+      artist: "Kanye West",
+      cover: "https://i.scdn.co/image/ab67616d0000b273d9194aa18fa4c9362b47464f"
+    },
+    {
+      title: "Data",
+      artist: "Tainy",
+      cover: "/photos/Tainy Data.webp"
+    }
+  ]
+
   const skills = [
-    { 
-      name: "Frontend Development", 
-      icon: <Laptop />, 
-      color: "neon-purple", 
-      proficiency: 95,
+    {
+      name: "Frontend Development",
+      icon: <Laptop />,
+      color: "neon-purple",
+      level: "Expert",
       details: ["React/Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
       experience: "5+ years"
     },
-    { 
-      name: "Backend Architecture", 
-      icon: <Database />, 
-      color: "neon-cyan", 
-      proficiency: 90,
+    {
+      name: "Backend Architecture",
+      icon: <Database />,
+      color: "neon-cyan",
+      level: "Avancé",
       details: ["Node.js", "PostgreSQL", "REST/GraphQL", "Microservices"],
       experience: "4+ years"
     },
-    { 
-      name: "DevOps & Infrastructure", 
-      icon: <Terminal />, 
-      color: "neon-green", 
-      proficiency: 85,
+    {
+      name: "DevOps & Infrastructure",
+      icon: <Terminal />,
+      color: "neon-green",
+      level: "Avancé",
       details: ["Docker", "Kubernetes", "AWS/Azure", "CI/CD"],
       experience: "3+ years"
     },
-    { 
-      name: "System Engineering", 
-      icon: <Code />, 
-      color: "neon-pink", 
-      proficiency: 88,
+    {
+      name: "System Engineering",
+      icon: <Code />,
+      color: "neon-pink",
+      level: "Avancé",
       details: ["Windows Server", "SCCM", "PowerShell", "Active Directory"],
       experience: "3+ years"
     }
@@ -398,7 +486,15 @@ export default function Portfolio() {
       <div className="matrix-rain"></div>
       
       {/* Liquid Glass Header Pill */}
-      <header className="fixed top-4 sm:top-6 left-1/2 transform -translate-x-1/2 z-50 w-auto">
+      <motion.header
+        className="fixed top-4 sm:top-6 left-1/2 transform -translate-x-1/2 z-50 w-auto"
+        initial={{ y: 0, opacity: 1 }}
+        animate={{
+          y: showHeader ? 0 : -100,
+          opacity: showHeader ? 1 : 0
+        }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+      >
         <nav className="liquid-header-pill">
           <div className="liquid-nav-content" ref={navRef}>
             <div className="nav-items">
@@ -407,7 +503,7 @@ export default function Portfolio() {
                 className={`nav-item ${activeSection === 'hero' ? 'active' : ''}`}
                 onClick={(e) => handleNavClick('hero', e)}
                 onMouseEnter={(e) => {
-                  playSound('hover')
+                  playSound()
                   updateLiquidSelector(e.currentTarget, false)
                 }}
                 onMouseLeave={() => {
@@ -426,7 +522,7 @@ export default function Portfolio() {
                 className={`nav-item ${activeSection === 'about' ? 'active' : ''}`}
                 onClick={(e) => handleNavClick('about', e)}
                 onMouseEnter={(e) => {
-                  playSound('hover')
+                  playSound()
                   updateLiquidSelector(e.currentTarget, false)
                 }}
                 onMouseLeave={() => {
@@ -446,7 +542,7 @@ export default function Portfolio() {
                 className={`nav-item ${activeSection === 'skills' ? 'active' : ''}`}
                 onClick={(e) => handleNavClick('skills', e)}
                 onMouseEnter={(e) => {
-                  playSound('hover')
+                  playSound()
                   updateLiquidSelector(e.currentTarget, false)
                 }}
                 onMouseLeave={() => {
@@ -465,7 +561,7 @@ export default function Portfolio() {
                 className={`nav-item ${activeSection === 'projects' ? 'active' : ''}`}
                 onClick={(e) => handleNavClick('projects', e)}
                 onMouseEnter={(e) => {
-                  playSound('hover')
+                  playSound()
                   updateLiquidSelector(e.currentTarget, false)
                 }}
                 onMouseLeave={() => {
@@ -480,11 +576,30 @@ export default function Portfolio() {
                 <span>Projets</span>
               </a>
               <a
+                href="#hobbies"
+                className={`nav-item ${activeSection === 'hobbies' ? 'active' : ''}`}
+                onClick={(e) => handleNavClick('hobbies', e)}
+                onMouseEnter={(e) => {
+                  playSound()
+                  updateLiquidSelector(e.currentTarget, false)
+                }}
+                onMouseLeave={() => {
+                  if (navRef.current) {
+                    const activeNavItem = navRef.current.querySelector('.nav-item.active') as HTMLElement
+                    if (activeNavItem) {
+                      updateLiquidSelector(activeNavItem, false)
+                    }
+                  }
+                }}
+              >
+                <span>Passions</span>
+              </a>
+              <a
                 href="#contact"
                 className={`nav-item ${activeSection === 'contact' ? 'active' : ''}`}
                 onClick={(e) => handleNavClick('contact', e)}
                 onMouseEnter={(e) => {
-                  playSound('hover')
+                  playSound()
                   updateLiquidSelector(e.currentTarget, false)
                 }}
                 onMouseLeave={() => {
@@ -503,7 +618,7 @@ export default function Portfolio() {
             <div className="header-glow"></div>
           </div>
         </nav>
-      </header>
+      </motion.header>
 
       {/* Hero Section */}
       <section id="hero" ref={heroRef} className="min-h-screen flex items-center justify-center relative z-10 px-4 py-8">
@@ -520,10 +635,10 @@ export default function Portfolio() {
             transition={{ delay: 0.3, duration: 0.8 }}
             className="liquid-terminal-pill cursor-pointer max-w-md mx-auto mb-8"
             onClick={() => {
-              playSound('click')
+              playSound()
               document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
             }}
-            onMouseEnter={() => playSound('hover')}
+            onMouseEnter={() => playSound()}
             onMouseMove={(e) => {
               const rect = e.currentTarget.getBoundingClientRect()
               const x = ((e.clientX - rect.left) / rect.width) * 100
@@ -549,7 +664,7 @@ export default function Portfolio() {
             animate={isHeroInView ? { opacity: 1, scale: 1 } : {}}
             transition={{ delay: 0.5, duration: 1 }}
             className="hero-title mb-6"
-            onMouseEnter={() => playSound('hover')}
+            onMouseEnter={() => playSound()}
           >
             Ryan Zemri
           </motion.h1>
@@ -573,7 +688,7 @@ export default function Portfolio() {
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => {
-                playSound('whoosh')
+                playSound()
                 document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })
               }}
               className="glass-card neon-glow-purple px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold text-white transition-all duration-300 text-sm sm:text-base w-full sm:w-auto max-w-xs"
@@ -584,7 +699,7 @@ export default function Portfolio() {
               whileHover={{ scale: 1.05, y: -5 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => {
-                playSound('whoosh')
+                playSound()
                 document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
               }}
               className="glass-card neon-glow-cyan px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold text-white transition-all duration-300 text-sm sm:text-base w-full sm:w-auto max-w-xs"
@@ -606,12 +721,18 @@ export default function Portfolio() {
           >
             À propos
           </motion.h2>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+
+          <motion.div
+            className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center"
+            style={isMobile ? {} : {
+              scale: aboutScale,
+              opacity: aboutOpacity
+            }}
+          >
             <motion.div
-              initial={{ opacity: 0, x: -100 }}
-              animate={isAboutInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 0.3, duration: 0.8 }}
+              initial={{ opacity: 0, scale: isMobile ? 0.8 : 1, x: isMobile ? 0 : -100 }}
+              animate={isAboutInView ? { opacity: 1, scale: 1, x: 0 } : {}}
+              transition={{ delay: isMobile ? 0.1 : 0.3, duration: isMobile ? 0.4 : 0.8 }}
               className="glass-card p-8"
             >
               <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-48 lg:h-48 mx-auto mb-6 sm:mb-8 relative">
@@ -625,9 +746,9 @@ export default function Portfolio() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 100 }}
-              animate={isAboutInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 0.5, duration: 0.8 }}
+              initial={{ opacity: 0, scale: isMobile ? 0.8 : 1, x: isMobile ? 0 : 100 }}
+              animate={isAboutInView ? { opacity: 1, scale: 1, x: 0 } : {}}
+              transition={{ delay: isMobile ? 0.3 : 0.5, duration: isMobile ? 0.4 : 0.8 }}
               className="space-y-6"
             >
               <h3 className="text-2xl sm:text-3xl font-bold text-white mb-4 sm:mb-6">Ingénieur Système Créatif</h3>
@@ -654,7 +775,7 @@ export default function Portfolio() {
                 ))}
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -670,17 +791,27 @@ export default function Portfolio() {
             Compétences
           </motion.h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8"
+            style={isMobile ? {} : {
+              scale: skillsScale,
+              opacity: skillsOpacity
+            }}
+          >
             {skills.map((skill, index) => (
               <motion.div
                 key={skill.name}
-                initial={{ opacity: 0, y: 100, scale: 0.8 }}
-                animate={isSkillsInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-                transition={{ delay: index * 0.2, duration: 0.8 }}
-                whileHover={{ scale: 1.03 }}
+                initial={{ opacity: 0, scale: 0.7, y: isMobile ? 30 : 100 }}
+                animate={isSkillsInView ? { opacity: 1, scale: 1, y: 0 } : {}}
+                transition={{
+                  delay: isMobile ? index * 0.15 : index * 0.2,
+                  duration: isMobile ? 0.5 : 0.8,
+                  ease: "easeOut"
+                }}
+                whileHover={{ scale: isMobile ? 1.02 : 1.03 }}
                 className={`glass-card p-4 sm:p-6 lg:p-8 text-center group cursor-pointer neon-glow-${skill.color.split('-')[1]}`}
                 onMouseEnter={(e) => {
-                  playSound('hover')
+                  playSound()
                   updateLiquidSelector(e.currentTarget, false)
                 }}
                 onMouseLeave={() => {
@@ -704,34 +835,24 @@ export default function Portfolio() {
                     <p className="text-xs text-gray-400">{skill.experience} experience</p>
                   </div>
                 </div>
-                
-                {/* Advanced Progress Bar */}
+
+                {/* Level Badge */}
                 <div className="relative mb-4">
-                  <div className="w-full bg-gray-800/50 rounded-full h-3 overflow-hidden backdrop-blur border border-gray-700/30">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={isSkillsInView ? { width: `${skill.proficiency}%` } : {}}
-                      transition={{ delay: index * 0.2 + 0.5, duration: 1.5, ease: "easeOut" }}
-                      className={`skill-progress-bar h-3 rounded-full relative overflow-hidden ${
-                        skill.color === 'neon-purple' ? 'from-purple-400 to-pink-400' :
-                        skill.color === 'neon-cyan' ? 'from-cyan-400 to-blue-400' :
-                        skill.color === 'neon-green' ? 'from-green-400 to-teal-400' :
-                        'from-pink-400 to-rose-400'
+                  <div className="w-full bg-gray-800/50 rounded-full px-4 py-2 overflow-hidden backdrop-blur border border-gray-700/30 flex items-center justify-center">
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={isSkillsInView ? { opacity: 1, scale: 1 } : {}}
+                      transition={{ delay: index * 0.2 + 0.5, duration: 0.8 }}
+                      className={`text-sm font-bold ${
+                        skill.color === 'neon-purple' ? 'text-purple-400' :
+                        skill.color === 'neon-cyan' ? 'text-cyan-400' :
+                        skill.color === 'neon-green' ? 'text-green-400' :
+                        'text-pink-400'
                       }`}
-                      style={{
-                        background: `linear-gradient(90deg, ${
-                          skill.color === 'neon-purple' ? 'rgb(147 51 234), rgb(236 72 153)' :
-                          skill.color === 'neon-cyan' ? 'rgb(34 211 238), rgb(59 130 246)' :
-                          skill.color === 'neon-green' ? 'rgb(52 211 153), rgb(20 184 166)' :
-                          'rgb(236 72 153), rgb(251 113 133)'
-                        })`
-                      }}
                     >
-                    </motion.div>
+                      {skill.level}
+                    </motion.span>
                   </div>
-                  <span className="absolute right-0 -top-1 text-xs font-bold text-white bg-gray-900/80 px-2 py-1 rounded-full backdrop-blur border border-gray-700/30">
-                    {skill.proficiency}%
-                  </span>
                 </div>
                 
                 {/* Skill Details */}
@@ -749,7 +870,7 @@ export default function Portfolio() {
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -765,22 +886,30 @@ export default function Portfolio() {
             Projets
           </motion.h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
+          <motion.div
+            className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8"
+            style={isMobile ? {} : {
+              scale: projectsScale,
+              opacity: projectsOpacity
+            }}
+          >
             {projects.map((project, index) => (
               <motion.div
                 key={project.id}
-                initial={{ opacity: 0, y: 100, rotateX: -15 }}
-                animate={isProjectsInView ? { opacity: 1, y: 0, rotateX: 0 } : {}}
-                transition={{ delay: index * 0.2, duration: 0.8 }}
-                whileHover={{ 
-                  scale: 1.02, 
-                  rotateY: 5, 
-                  rotateX: 5,
-                  z: 50 
+                initial={{ opacity: 0, scale: 0.7, y: isMobile ? 40 : 0 }}
+                animate={isProjectsInView ? { opacity: 1, scale: 1, y: 0 } : {}}
+                transition={{
+                  delay: isMobile ? index * 0.2 : index * 0.15,
+                  duration: isMobile ? 0.5 : 0.8,
+                  ease: "easeOut"
+                }}
+                whileHover={{
+                  scale: isMobile ? 1.02 : 1.05,
+                  z: 50
                 }}
                 className={`glass-card p-4 sm:p-6 lg:p-8 group cursor-pointer neon-glow-${project.color.split('-')[1]}`}
                 onMouseEnter={(e) => {
-                  playSound('hover')
+                  playSound()
                   updateLiquidSelector(e.currentTarget, false)
                 }}
                 onMouseLeave={() => {
@@ -792,7 +921,7 @@ export default function Portfolio() {
                   }
                 }}
                 onClick={() => {
-                  playSound('click')
+                  playSound()
                   window.open(project.githubUrl, '_blank')
                 }}
               >
@@ -801,40 +930,34 @@ export default function Portfolio() {
                     {project.icon}
                   </div>
                   <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-white flex-1">{project.title}</h3>
-                  <div className="flex gap-2 sm:gap-3 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
+                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
                     {project.demoUrl && (
                       <motion.button
                         onClick={(e) => {
                           e.stopPropagation()
-                          playSound('click')
+                          playSound()
                           window.open(project.demoUrl, '_blank')
                         }}
-                        whileHover={{ scale: 1.05, y: -2 }}
+                        whileHover={{ scale: 1.15, y: -2 }}
                         whileTap={{ scale: 0.95 }}
-                        className="glass-card px-2 sm:px-4 py-1 sm:py-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-400/30 hover:border-cyan-400/50 rounded-lg sm:rounded-xl transition-all duration-300 backdrop-blur-sm group/btn"
+                        className="glass-card p-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-400/30 hover:border-cyan-400/50 rounded-lg transition-all duration-300 backdrop-blur-sm group/btn"
                         title="Voir le site web"
                       >
-                        <div className="flex items-center gap-1 sm:gap-2">
-                          <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 text-cyan-400 group-hover/btn:scale-110 transition-transform" />
-                          <span className="text-xs sm:text-sm font-semibold text-white hidden sm:inline">Site Web</span>
-                        </div>
+                        <ExternalLink className="w-4 h-4 text-cyan-400 group-hover/btn:scale-110 transition-transform" />
                       </motion.button>
                     )}
                     <motion.button
                       onClick={(e) => {
                         e.stopPropagation()
-                        playSound('click')
+                        playSound()
                         window.open(project.githubUrl, '_blank')
                       }}
-                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileHover={{ scale: 1.15, y: -2 }}
                       whileTap={{ scale: 0.95 }}
-                      className="glass-card px-2 sm:px-4 py-1 sm:py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 border border-purple-400/30 hover:border-purple-400/50 rounded-lg sm:rounded-xl transition-all duration-300 backdrop-blur-sm group/btn"
+                      className="glass-card p-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 border border-purple-400/30 hover:border-purple-400/50 rounded-lg transition-all duration-300 backdrop-blur-sm group/btn"
                       title="Voir le code source"
                     >
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        <Github className="w-3 h-3 sm:w-4 sm:h-4 text-purple-400 group-hover/btn:scale-110 transition-transform" />
-                        <span className="text-xs sm:text-sm font-semibold text-white hidden sm:inline">GitHub</span>
-                      </div>
+                      <Github className="w-4 h-4 text-purple-400 group-hover/btn:scale-110 transition-transform" />
                     </motion.button>
                   </div>
                 </div>
@@ -854,10 +977,160 @@ export default function Portfolio() {
                 <div className="w-full h-1 bg-cyan-500/20 rounded-full"></div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
+      {/* Hobbies Section */}
+      <section id="hobbies" ref={hobbiesRef} className="min-h-screen flex items-center justify-center py-16 sm:py-24 lg:py-32 px-4 relative z-10">
+        <div className="max-w-7xl mx-auto w-full">
+          <motion.h2
+            initial={{ opacity: 0, y: 50 }}
+            animate={isHobbiesInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center mb-8 sm:mb-12 lg:mb-16 hero-tagline"
+          >
+            Passions
+          </motion.h2>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
+            {/* Photography Section */}
+            <div className="flex flex-col h-full">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={isHobbiesInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.1, duration: 0.6, ease: "easeOut" }}
+                className="glass-card p-4 sm:p-6 flex flex-col hobby-card-glow-purple flex-1"
+                style={{ willChange: 'opacity, transform' }}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <Camera className="w-6 h-6 sm:w-8 sm:h-8 text-purple-400" />
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">Photographie</h3>
+                </div>
+
+                {/* Swiper Carousel */}
+                <div className="swiper-container-custom">
+                  <Swiper
+                    modules={isMobile ? [Pagination] : [Navigation, Pagination, EffectCoverflow, Autoplay]}
+                    effect={isMobile ? "slide" : "coverflow"}
+                    grabCursor={true}
+                    centeredSlides={true}
+                    slidesPerView="auto"
+                    coverflowEffect={isMobile ? undefined : {
+                      rotate: 40,
+                      stretch: 0,
+                      depth: 80,
+                      modifier: 1,
+                      slideShadows: false,
+                    }}
+                    pagination={{
+                      clickable: true,
+                      dynamicBullets: true
+                    }}
+                    navigation={!isMobile}
+                    autoplay={isMobile ? false : {
+                      delay: 3000,
+                      disableOnInteraction: false,
+                    }}
+                    loop={true}
+                    className="photo-swiper"
+                  >
+                    {photos.map((photo, index) => (
+                      <SwiperSlide key={index}>
+                        <div
+                          className="relative aspect-[4/3] w-full rounded-lg overflow-hidden bg-gray-800"
+                          onContextMenu={(e) => e.preventDefault()}
+                        >
+                          <Image
+                            src={photo}
+                            alt={`Photo ${index + 1}`}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 75vw, 350px"
+                            loading={index === 0 ? "eager" : "lazy"}
+                            draggable={false}
+                            quality={isMobile ? 60 : 75}
+                            placeholder="blur"
+                            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                          />
+                        </div>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
+              </motion.div>
+
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={isHobbiesInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.4, duration: 0.5, ease: "easeOut" }}
+                className="text-gray-300 text-sm sm:text-base text-center mt-4 hobby-text-glow-purple"
+              >
+                Amateur de photographie, je capture les moments qui m&apos;inspirent.
+              </motion.p>
+            </div>
+
+            {/* Music Section */}
+            <div className="flex flex-col h-full">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={isHobbiesInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
+                className="glass-card p-4 sm:p-6 flex flex-col hobby-card-glow-cyan flex-1"
+                style={{ willChange: 'opacity, transform' }}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <Music className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400" />
+                  <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">Mélomane</h3>
+                </div>
+
+                {/* Album Grid - 3x2 */}
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+                  {albums.map((album, index) => (
+                    <motion.div
+                      key={album.title}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={isHobbiesInView ? { opacity: 1, scale: 1 } : {}}
+                      transition={{ delay: 0.3 + index * 0.05, duration: 0.4, ease: "easeOut" }}
+                      whileHover={isMobile ? {} : {
+                        scale: 1.08,
+                        rotate: 2,
+                        y: -4
+                      }}
+                      className="relative aspect-square rounded-md overflow-hidden shadow-md group cursor-pointer border border-gray-700/30 transition-shadow duration-300 hover:shadow-lg hover:shadow-cyan-500/20 bg-gray-800"
+                    >
+                      <Image
+                        src={album.cover}
+                        alt={`${album.title} - ${album.artist}`}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 33vw, 150px"
+                        loading={index < 3 ? "eager" : "lazy"}
+                        quality={isMobile ? 50 : 75}
+                        placeholder="blur"
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-end p-1 sm:p-1.5 text-center">
+                        <p className="text-white font-bold text-[8px] sm:text-[10px] leading-tight">{album.title}</p>
+                        <p className="text-gray-300 text-[7px] sm:text-[9px]">{album.artist}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={isHobbiesInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.5, duration: 0.5, ease: "easeOut" }}
+                className="text-gray-300 text-sm sm:text-base text-center mt-4 hobby-text-glow-cyan"
+              >
+                Les albums qui m&apos;accompagnent au quotidien.
+              </motion.p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Contact Section */}
       <section id="contact" ref={contactRef} className="py-16 sm:py-24 lg:py-32 px-4 relative z-10">
@@ -871,12 +1144,18 @@ export default function Portfolio() {
             Contact
           </motion.h2>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+          <motion.div
+            className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12"
+            style={isMobile ? {} : {
+              scale: contactScale,
+              opacity: contactOpacity
+            }}
+          >
             {/* Contact Info */}
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={isContactInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 0.2, duration: 0.8 }}
+              initial={{ opacity: 0, scale: isMobile ? 0.8 : 1, x: isMobile ? 0 : -50 }}
+              animate={isContactInView ? { opacity: 1, scale: 1, x: 0 } : {}}
+              transition={{ delay: isMobile ? 0.1 : 0.2, duration: isMobile ? 0.5 : 0.8 }}
               className="space-y-6 sm:space-y-8"
             >
               <div className="glass-card p-4 sm:p-6 lg:p-8">
@@ -931,16 +1210,16 @@ export default function Portfolio() {
 
             {/* Contact Form */}
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={isContactInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 0.4, duration: 0.8 }}
+              initial={{ opacity: 0, scale: isMobile ? 0.8 : 1, x: isMobile ? 0 : 50 }}
+              animate={isContactInView ? { opacity: 1, scale: 1, x: 0 } : {}}
+              transition={{ delay: isMobile ? 0.3 : 0.4, duration: isMobile ? 0.5 : 0.8 }}
             >
               <div className="glass-card p-4 sm:p-6 lg:p-8">
                 <h3 className="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Envoyez-moi un message</h3>
                 
                 <form className="space-y-4 sm:space-y-6" onSubmit={(e) => {
                   e.preventDefault()
-                  playSound('click')
+                  playSound()
                   alert('Merci pour votre message ! Je vous répondrai bientôt.')
                 }}>
                   <div>
@@ -979,7 +1258,7 @@ export default function Portfolio() {
                     whileTap={{ scale: 0.95 }}
                     className="w-full bg-cyan-500 text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 backdrop-blur border border-cyan-400/30 text-sm sm:text-base"
                     onMouseEnter={(e) => {
-                      playSound('hover')
+                      playSound()
                       updateLiquidSelector(e.currentTarget, false)
                     }}
                     onMouseLeave={() => {
@@ -999,7 +1278,7 @@ export default function Portfolio() {
                 </form>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </section>
 

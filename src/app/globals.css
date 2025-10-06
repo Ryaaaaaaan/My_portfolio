@@ -33,6 +33,210 @@ html {
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Performance optimizations */
+.scroll-section {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.glass-card {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Mobile optimizations - keep zoom effects but lighter */
+@media (max-width: 768px) {
+  /* Enable hardware acceleration */
+  .scroll-section {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* Smooth animations on mobile */
+  .glass-card {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+
+  /* Reduce motion intensity */
+  body {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Better mobile spacing */
+  section {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Improve text readability on mobile */
+  h1, h2, h3 {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Matrix rain less intensive on mobile */
+  .matrix-rain {
+    opacity: 0.3;
+  }
+
+  /* Reduce glass card blur on mobile for performance */
+  .glass-card {
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .scroll-section {
+    will-change: transform, opacity;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+
+/* Swiper Custom Styles */
+.photo-swiper {
+  width: 100%;
+  padding: 20px 0 30px 0 !important;
+}
+
+.photo-swiper .swiper-slide {
+  width: 75%;
+  max-width: 350px;
+}
+
+@media (max-width: 768px) {
+  .photo-swiper .swiper-slide {
+    width: 85%;
+    max-width: 300px;
+  }
+
+  .photo-swiper {
+    padding: 15px 0 25px 0 !important;
+  }
+}
+
+/* Protection des images */
+.photo-swiper img,
+.swiper-slide img {
+  pointer-events: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+.photo-swiper .swiper-slide::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.photo-swiper .swiper-button-next,
+.photo-swiper .swiper-button-prev {
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+}
+
+.photo-swiper .swiper-button-next:after,
+.photo-swiper .swiper-button-prev:after {
+  font-size: 20px;
+}
+
+.photo-swiper .swiper-pagination-bullet {
+  background: white;
+  opacity: 0.5;
+}
+
+.photo-swiper .swiper-pagination-bullet-active {
+  opacity: 1;
+  background: linear-gradient(135deg, #a855f7, #ec4899);
+}
+
+.swiper-container-custom {
+  overflow: visible;
+}
+
+/* Fix swiper in glass card */
+.glass-card .swiper {
+  overflow: visible;
+}
+
+.glass-card .swiper-wrapper {
+  padding-bottom: 10px;
+}
+
+/* Hobby cards glowing effects */
+.hobby-card-glow-purple {
+  box-shadow:
+    0 0 30px rgba(168, 85, 247, 0.2),
+    0 0 60px rgba(168, 85, 247, 0.1),
+    0 0 100px rgba(168, 85, 247, 0.05),
+    inset 0 0 60px rgba(168, 85, 247, 0.05);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.hobby-card-glow-purple:hover {
+  box-shadow:
+    0 0 40px rgba(168, 85, 247, 0.35),
+    0 0 80px rgba(168, 85, 247, 0.2),
+    0 0 120px rgba(168, 85, 247, 0.1),
+    inset 0 0 80px rgba(168, 85, 247, 0.08);
+  transform: translateY(-2px);
+}
+
+.hobby-card-glow-cyan {
+  box-shadow:
+    0 0 30px rgba(34, 211, 238, 0.2),
+    0 0 60px rgba(34, 211, 238, 0.1),
+    0 0 100px rgba(34, 211, 238, 0.05),
+    inset 0 0 60px rgba(34, 211, 238, 0.05);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.hobby-card-glow-cyan:hover {
+  box-shadow:
+    0 0 40px rgba(34, 211, 238, 0.35),
+    0 0 80px rgba(34, 211, 238, 0.2),
+    0 0 120px rgba(34, 211, 238, 0.1),
+    inset 0 0 80px rgba(34, 211, 238, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Hobby text glowing effects */
+.hobby-text-glow-purple {
+  text-shadow:
+    0 0 20px rgba(168, 85, 247, 0.4),
+    0 0 40px rgba(168, 85, 247, 0.2),
+    0 0 60px rgba(168, 85, 247, 0.1);
+}
+
+.hobby-text-glow-cyan {
+  text-shadow:
+    0 0 20px rgba(34, 211, 238, 0.4),
+    0 0 40px rgba(34, 211, 238, 0.2),
+    0 0 60px rgba(34, 211, 238, 0.1);
 }
 
 body {
