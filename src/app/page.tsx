@@ -454,7 +454,7 @@ export default function Portfolio() {
       color: "neon-green",
       level: "Avancé",
       details: ["Docker", "Kubernetes", "AWS/Azure", "CI/CD"],
-      experience: "3+ years"
+      experience: "5+ years"
     },
     {
       name: "System Engineering",
@@ -462,7 +462,7 @@ export default function Portfolio() {
       color: "neon-pink",
       level: "Avancé",
       details: ["Windows Server", "SCCM", "PowerShell", "Active Directory"],
-      experience: "3+ years"
+      experience: "5+ years"
     }
   ]
 
@@ -744,10 +744,9 @@ export default function Portfolio() {
                 et les interfaces utilisateur innovantes qui repoussent les limites du possible.
               </p>
               
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-6 sm:mt-8">
+              <div className="grid grid-cols-3 gap-3 sm:gap-4 mt-6 sm:mt-8">
                 {[
-                  { label: "Projets", value: "50+" },
-                  { label: "Expérience", value: "3 ans" },
+                  { label: "Expérience", value: "5 ans" },
                   { label: "Technologies", value: "25+" },
                   { label: "Café/jour", value: "∞" }
                 ].map((stat) => (
